@@ -1,394 +1,451 @@
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-  *{box-sizing:border-box;margin:0;padding:0}
-  :root{--mono:'Share Tech Mono',monospace;--green:#4a7c59;--dkgreen:#1a3326;--red:#8b1a1a;--amber:#8b6914;--paper:var(--color-background-primary);--ink:var(--color-text-primary);--muted:var(--color-text-secondary);--border:var(--color-border-secondary)}
-  body{font-family:var(--mono);font-size:13px}
-  .doc{max-width:680px;padding:2rem 1.5rem;line-height:1.6}
-  .header-bar{border:1.5px solid var(--border);padding:1rem 1.25rem;margin-bottom:1.5rem;position:relative}
-  .stamp{font-size:22px;font-weight:700;letter-spacing:6px;color:var(--red);border:2.5px solid var(--red);display:inline-block;padding:4px 14px;transform:rotate(-2.5deg);position:absolute;top:12px;right:16px;opacity:0.85}
-  .doc-id{font-size:11px;color:var(--muted);margin-bottom:6px;letter-spacing:1px}
-  .org-name{font-size:20px;letter-spacing:4px;color:var(--ink);font-weight:700;margin-bottom:2px}
-  .org-sub{font-size:11px;color:var(--muted);letter-spacing:2px}
-  .clearance{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-  .badge{font-size:10px;padding:3px 8px;border:1px solid;letter-spacing:1.5px}
-  .badge-r{border-color:var(--red);color:var(--red)}
-  .badge-g{border-color:var(--green);color:var(--green)}
-  .badge-a{border-color:var(--amber);color:var(--amber)}
-  .section{margin-bottom:2rem}
-  .section-title{font-size:11px;letter-spacing:3px;color:var(--muted);border-bottom:0.5px solid var(--border);padding-bottom:6px;margin-bottom:1rem;text-transform:uppercase}
-  .classified-block{border-left:2px solid var(--red);padding:0.75rem 1rem;margin:1rem 0;background:var(--color-background-secondary)}
-  .redacted{background:var(--ink);color:var(--ink);display:inline;padding:0 2px;user-select:none;font-size:inherit}
-  .field-row{display:grid;grid-template-columns:180px 1fr;gap:8px;margin-bottom:8px;font-size:12px}
-  .field-label{color:var(--muted)}
-  .field-val{color:var(--ink)}
-  .hier-item{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;padding:8px 10px;border:0.5px solid var(--border)}
-  .tier-num{font-size:22px;color:var(--border);min-width:32px;text-align:right;line-height:1}
-  .tier-body{}
-  .tier-name{font-weight:700;font-size:13px;color:var(--ink);letter-spacing:1px}
-  .tier-desc{font-size:11px;color:var(--muted);margin-top:3px}
-  .class-item{margin-bottom:12px;padding:10px 12px;border-left:3px solid}
-  .cl0{border-color:#4a7c59}.cl1{border-color:#8b8b14}.cl2{border-color:#8b6914}.cl3{border-color:#8b3014}.cl4{border-color:#8b1a1a}.cl5{border-color:#1a0814}
-  .cl-tag{font-size:10px;letter-spacing:2px;font-weight:700}
-  .cl-name{font-size:14px;font-weight:700;color:var(--ink);margin:2px 0}
-  .cl-desc{font-size:11px;color:var(--muted)}
-  .anomaly{border:0.5px solid var(--border);margin-bottom:1.5rem}
-  .anomaly-head{padding:8px 12px;background:var(--color-background-secondary);border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-  .anomaly-id{font-size:12px;font-weight:700;letter-spacing:2px}
-  .anomaly-body{padding:12px}
-  .anomaly-row{display:grid;grid-template-columns:140px 1fr;gap:6px;margin-bottom:6px;font-size:12px}
-  .report-block{border:0.5px solid var(--border);padding:10px 12px;margin:10px 0;font-size:11px;background:var(--color-background-secondary)}
-  .report-head{color:var(--muted);margin-bottom:6px;font-size:10px;letter-spacing:1px}
-  .memo{border:1px dashed var(--border);padding:10px 14px;margin:12px 0;font-size:11px;position:relative}
-  .memo-label{position:absolute;top:-8px;left:10px;background:var(--paper);padding:0 6px;font-size:10px;color:var(--muted);letter-spacing:1px}
-  .warning-final{border:1.5px solid var(--red);padding:1rem 1.25rem;margin-top:2rem}
-  .warning-title{color:var(--red);font-size:10px;letter-spacing:3px;margin-bottom:8px}
-  .tabs{display:flex;gap:4px;margin-bottom:1.5rem;flex-wrap:wrap}
-  .tab{padding:5px 12px;border:0.5px solid var(--border);cursor:pointer;font-size:11px;letter-spacing:1px;background:transparent;color:var(--muted);font-family:var(--mono)}
-  .tab.active{background:var(--color-background-secondary);color:var(--ink);border-color:var(--ink)}
-  .tab-pane{display:none}.tab-pane.active{display:block}
-  .proc-item{margin-bottom:14px;padding:10px;border:0.5px solid var(--border)}
-  .proc-code{font-size:10px;color:var(--muted);letter-spacing:2px;margin-bottom:4px}
-  .proc-title{font-weight:700;font-size:12px;color:var(--ink);margin-bottom:4px}
-  .proc-body{font-size:11px;color:var(--muted);line-height:1.7}
-  .forbidden{border-left:2px solid var(--red);background:var(--color-background-secondary)}
-  .forbidden .proc-title{color:var(--red)}
-  .coord-line{font-size:10px;color:var(--muted);margin-top:4px}
-  .note-inline{font-size:10px;color:var(--amber);display:block;margin-top:4px}
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --mono:'Share Tech Mono',monospace;
+  --green:#4a7c59;--red:#8b1a1a;--amber:#8b6914;
+  --paper:var(--color-background-primary);--ink:var(--color-text-primary);
+  --muted:var(--color-text-secondary);--border:var(--color-border-secondary)
+}
+body{font-family:var(--mono);font-size:13px;-webkit-text-size-adjust:100%}
+.doc{max-width:720px;margin:0 auto;padding:1rem;line-height:1.6}
+.header-bar{border:1.5px solid var(--border);padding:1rem;margin-bottom:1rem;position:relative}
+.stamp{font-size:clamp(13px,3.5vw,20px);font-weight:700;letter-spacing:3px;color:var(--red);border:2.5px solid var(--red);display:inline-block;padding:3px 9px;transform:rotate(-2.5deg);position:absolute;top:10px;right:10px;opacity:0.85;white-space:nowrap}
+.doc-id{font-size:10px;color:var(--muted);margin-bottom:6px;letter-spacing:0.5px;padding-right:100px;word-break:break-word}
+.org-name{font-size:clamp(15px,4vw,20px);letter-spacing:clamp(1px,2vw,4px);color:var(--ink);font-weight:700;margin-bottom:2px}
+.org-sub{font-size:10px;color:var(--muted);letter-spacing:1px;line-height:1.5}
+.clearance{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.badge{font-size:10px;padding:3px 7px;border:1px solid;letter-spacing:1px;white-space:nowrap}
+.badge-r{border-color:var(--red);color:var(--red)}
+.badge-g{border-color:var(--green);color:var(--green)}
+.badge-a{border-color:var(--amber);color:var(--amber)}
+.tabs{display:flex;gap:4px;margin-bottom:1rem;flex-wrap:wrap}
+.tab{padding:6px 10px;border:0.5px solid var(--border);cursor:pointer;font-size:11px;letter-spacing:0.5px;background:transparent;color:var(--muted);font-family:var(--mono);min-height:36px;flex-shrink:0;touch-action:manipulation}
+.tab.active{background:var(--color-background-secondary);color:var(--ink);border-color:var(--ink)}
+.tab-pane{display:none}.tab-pane.active{display:block}
+.section{margin-bottom:1.5rem}
+.section-title{font-size:10px;letter-spacing:2px;color:var(--muted);border-bottom:0.5px solid var(--border);padding-bottom:6px;margin-bottom:1rem;text-transform:uppercase}
+.classified-block{border-left:2px solid var(--red);padding:0.75rem 1rem;margin:1rem 0;background:var(--color-background-secondary)}
+.redacted{background:var(--ink);color:var(--ink);display:inline;padding:0 2px;user-select:none;font-size:inherit;word-break:break-all}
+.field-row{display:grid;grid-template-columns:minmax(120px,160px) 1fr;gap:8px;margin-bottom:8px;font-size:12px}
+@media(max-width:480px){.field-row{grid-template-columns:1fr;gap:2px}}
+.field-label{color:var(--muted)}.field-val{color:var(--ink);word-break:break-word}
+.hier-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;padding:8px;border:0.5px solid var(--border)}
+.tier-num{font-size:clamp(16px,4vw,22px);color:var(--border);min-width:28px;text-align:right;line-height:1;flex-shrink:0}
+.tier-name{font-weight:700;font-size:13px;color:var(--ink);letter-spacing:1px}
+.tier-desc{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.6}
+.class-item{margin-bottom:12px;padding:10px;border-left:3px solid}
+.cl0{border-color:#4a7c59}.cl1{border-color:#8b8b14}.cl2{border-color:#8b6914}.cl3{border-color:#8b3014}.cl4{border-color:#8b1a1a}.cl5{border-color:#1a0814}
+.cl-tag{font-size:10px;letter-spacing:1.5px;font-weight:700}
+.cl-name{font-size:14px;font-weight:700;color:var(--ink);margin:2px 0}
+.cl-desc{font-size:11px;color:var(--muted);line-height:1.6}
+.anomaly{border:0.5px solid var(--border);margin-bottom:1.5rem}
+.anomaly-head{padding:8px 10px;background:var(--color-background-secondary);border-bottom:0.5px solid var(--border);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px}
+.anomaly-id{font-size:11px;font-weight:700;letter-spacing:1px;word-break:break-all}
+.anomaly-body{padding:10px}
+.anomaly-row{display:grid;grid-template-columns:minmax(110px,140px) 1fr;gap:6px;margin-bottom:6px;font-size:12px}
+@media(max-width:480px){.anomaly-row{grid-template-columns:1fr;gap:2px}}
+.report-block{border:0.5px solid var(--border);padding:10px;margin:10px 0;font-size:11px;background:var(--color-background-secondary);line-height:1.7}
+.report-head{color:var(--muted);margin-bottom:6px;font-size:10px;letter-spacing:0.5px;word-break:break-word}
+.memo{border:1px dashed var(--border);padding:12px 12px 10px;margin:20px 0 12px;font-size:11px;position:relative}
+.memo-label{position:absolute;top:-9px;left:10px;background:var(--paper);padding:0 6px;font-size:10px;color:var(--muted);max-width:90%;white-space:normal;line-height:1.4}
+.warning-final{border:1.5px solid var(--red);padding:1rem;margin-top:1.5rem}
+.warning-title{color:var(--red);font-size:10px;letter-spacing:2px;margin-bottom:8px}
+.proc-item{margin-bottom:12px;padding:10px;border:0.5px solid var(--border)}
+.proc-code{font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:4px;word-break:break-word}
+.proc-title{font-weight:700;font-size:12px;color:var(--ink);margin-bottom:4px}
+.proc-body{font-size:11px;color:var(--muted);line-height:1.7}
+.forbidden{border-left:2px solid var(--red);background:var(--color-background-secondary)}
+.forbidden .proc-title{color:var(--red)}
+.note-inline{font-size:10px;color:var(--amber);display:block;margin-top:6px;font-style:italic;line-height:1.5}
+.sep{height:0.5px;background:var(--border);margin:10px 0}
+p{line-height:1.7;word-break:break-word}
+/* Éléments d'imperfection */
+.typo-corr{text-decoration:line-through;color:var(--muted);font-size:11px}
+.hand-note{font-size:11px;color:var(--amber);border-left:2px solid var(--amber);padding:6px 10px;margin:8px 0;background:var(--color-background-secondary);font-style:italic;line-height:1.6}
+.corruption{font-size:11px;color:var(--red);opacity:0.7;font-style:italic;display:block;margin:4px 0}
+.agent-conflict{border:1px solid var(--amber);padding:8px 10px;margin:10px 0;font-size:11px;background:var(--color-background-secondary)}
+.conflict-head{font-size:10px;color:var(--amber);margin-bottom:4px;letter-spacing:1px}
+.meta-anomaly{border:1.5px dashed var(--red);padding:10px;margin:12px 0;font-size:11px;position:relative}
+.meta-label{font-size:10px;color:var(--red);letter-spacing:1px;margin-bottom:6px}
+.struck{text-decoration:line-through;opacity:0.5}
+.insert{color:var(--amber);font-size:10px}
 </style>
+
 <div class="doc">
+  <h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Dossier classifié VERIDIAN — Bureau d'équilibre normatif — Révision 7.2</h2>
+
   <div class="header-bar">
     <div class="stamp">CLASSIFIÉ</div>
-    <div class="doc-id">DOC/VERIDIAN/CENTRAL/DOSSIER-SOCLE — RÉV. 7.2 — ÉMIS PAR BUREAU D'ARCHIVAGE PERMANENT</div>
+    <div class="doc-id">DOC/VERIDIAN/CENTRAL/DOSSIER-SOCLE — RÉV. 7.2 — ÉMIS PAR BUREAU D'ARCHIVAGE PERMANENT<br><span style="color:var(--red);font-size:9px">⚠ MÉTADONNÉES DE CE FICHIER : DATE DE DERNIÈRE MODIFICATION INCONNUE — AUTEUR : [CHAMP VIDE]</span></div>
     <div class="org-name">VERIDIAN</div>
     <div class="org-sub">VIGILE D'ÉQUILIBRE ET RÉGULATION DES INCIDENTS DÉCALÉS ET ANOMALIES NORMATIVES</div>
     <div class="clearance">
-      <span class="badge badge-r">DIFFUSION: NOCTURN ET SUPÉRIEUR</span>
+      <span class="badge badge-r">DIFFUSION: NOCTURN ET SUP.</span>
       <span class="badge badge-a">REPRODUCTION INTERDITE</span>
       <span class="badge badge-g">ARCHIVE PERMANENTE — SOUCHE C</span>
     </div>
   </div>
 
-  <div class="tabs">
-    <button class="tab active" onclick="showTab('general')">I. GÉNÉRALITÉS</button>
-    <button class="tab" onclick="showTab('hier')">II. HIÉRARCHIE</button>
-    <button class="tab" onclick="showTab('class')">III. CLASSIFICATION</button>
-    <button class="tab" onclick="showTab('proc')">IV. PROCÉDURES</button>
-    <button class="tab" onclick="showTab('anom')">V. ANOMALIES</button>
-    <button class="tab" onclick="showTab('docs')">VI. DOCUMENTS</button>
+  <div class="tabs" role="tablist">
+    <button class="tab active" role="tab" aria-selected="true" onclick="showTab('general',this)">I. GÉNÉRALITÉS</button>
+    <button class="tab" role="tab" aria-selected="false" onclick="showTab('hier',this)">II. HIÉRARCHIE</button>
+    <button class="tab" role="tab" aria-selected="false" onclick="showTab('class',this)">III. CLASSIFICATION</button>
+    <button class="tab" role="tab" aria-selected="false" onclick="showTab('proc',this)">IV. PROCÉDURES</button>
+    <button class="tab" role="tab" aria-selected="false" onclick="showTab('anom',this)">V. ANOMALIES</button>
+    <button class="tab" role="tab" aria-selected="false" onclick="showTab('docs',this)">VI. DOCUMENTS</button>
   </div>
 
-  <div id="tab-general" class="tab-pane active">
+  <!-- TAB GÉNÉRALITÉS -->
+  <div id="tab-general" class="tab-pane active" role="tabpanel">
     <div class="section">
       <div class="section-title">01 — présentation générale</div>
       <div class="field-row"><span class="field-label">DÉSIGNATION OFFICIELLE</span><span class="field-val">VERIDIAN — Bureau d'Équilibre Normatif</span></div>
-      <div class="field-row"><span class="field-label">DÉSIGNATION OPÉRATIONNELLE</span><span class="field-val">L'ORGANE</span></div>
+      <div class="field-row"><span class="field-label">DÉSIGNATION OPÉRATIONNELLE</span><span class="field-val">L'ORGANE <span class="insert">[note : certains documents niveau FEUILLE utilisent "L'ORGANE MORT" — aucune explication trouvée]</span></span></div>
       <div class="field-row"><span class="field-label">SIÈGE ADMINISTRATIF</span><span class="field-val"><span class="redacted">████████████</span>, canton de Genève, CH — bâtiment non référencé cadastre fédéral</span></div>
-      <div class="field-row"><span class="field-label">DATE DE FONDATION</span><span class="field-val">14 mars 1947 (accord de <span class="redacted">██████</span>)</span></div>
-      <div class="field-row"><span class="field-label">EFFECTIFS DÉCLARÉS</span><span class="field-val">Aucun (structure fantôme — personnels rattachés à entités-écrans)</span></div>
-      <div class="field-row"><span class="field-label">BUDGET ANNUEL ESTIMÉ</span><span class="field-val">Non disponible — flux fragmentés sur 214 structures relais</span></div>
+      <div class="field-row"><span class="field-label">DATE DE FONDATION</span><span class="field-val">14 mars 1947 (accord de <span class="redacted">██████</span>)<br><span class="insert">[CONTRADICTION : un mémo de 1962 mentionne "notre dixième anniversaire" daté de 1961 — non résolu]</span></span></div>
+      <div class="field-row"><span class="field-label">EFFECTIFS DÉCLARÉS</span><span class="field-val">Aucun (structure fantôme)</span></div>
+      <div class="field-row"><span class="field-label">EFFECTIFS RÉELS ESTIMÉS</span><span class="field-val"><span class="typo-corr">4 200</span> → correction RACINE-1 : "estimation invalide, méthode de comptage à revoir". Aucune nouvelle estimation produite depuis 2018.</span></div>
     </div>
 
     <div class="section">
-      <div class="section-title">02 — objectif déclaré / objectif réel</div>
-      <p style="font-size:12px;color:var(--muted);margin-bottom:10px">L'objectif déclaré aux États signataires (niveau ARBRE) est la surveillance et la gestion des "phénomènes environnementaux atypiques" susceptibles d'affecter la stabilité géopolitique régionale. Cette formulation date du mémorandum d'origine et n'a jamais été révisée.</p>
+      <div class="section-title">02 — objectif réel</div>
       <div class="classified-block">
-        <p style="font-size:12px;color:var(--ink)"><strong>OBJECTIF RÉEL (niveau RACINE et supérieur uniquement) :</strong><br><br>
-        VERIDIAN est mandatée pour contenir, répertorier et — si nécessaire — supprimer toute manifestation susceptible d'affecter la perception collective de la réalité physique. L'objectif prioritaire n'est pas la sécurité des populations mais la préservation du <em>consensus normatif</em> : le cadre cognitif partagé dans lequel les sociétés humaines fonctionnent. Toute rupture de ce consensus, quelle qu'en soit la cause, est traitée comme une menace de premier niveau.<br><br>
-        Les populations ne sont pas protégées <em>des</em> anomalies. Elles sont protégées <em>de la connaissance</em> des anomalies.</p>
+        <p style="font-size:12px;color:var(--ink)">VERIDIAN est mandatée pour contenir et, si nécessaire, supprimer toute manifestation susceptible d'affecter la <span class="typo-corr">stabilité normative collective</span> <span class="insert">← formulation rejetée par RACINE-3 en 2009 ("trop vague") — jamais remplacée</span>.<br><br>
+        Les populations ne sont pas protégées <em>des</em> anomalies. Elles sont protégées <em>de la connaissance</em> des anomalies.<br><br>
+        <span style="font-size:11px;color:var(--muted)">Note RACINE-2, 2021 : "Cette distinction a un sens si nous savons ce que nous protégeons. Je ne suis plus certain que nous le sachions."</span></p>
       </div>
+      <div class="hand-note">Note manuscrite collée sur l'exemplaire physique de cette page, auteur non identifié :<br>"On ne protège rien. On retarde. C'est différent."</div>
     </div>
 
     <div class="section">
       <div class="section-title">03 — incident fondateur</div>
       <div class="memo"><span class="memo-label">EXTRAIT — MÉMO INTERNE 1947-001 — PARTIELLEMENT DÉCLASSIFIÉ</span>
-        <p style="font-size:11px;line-height:1.8">Entre le 19 et le 23 janvier 1947, dans une zone montagneuse du <span class="redacted">██████████████</span>, vingt-trois membres d'une expédition de cartographie militaire ont présenté simultanément les mêmes symptômes dissociatifs, les mêmes visions identiques et mot pour mot les mêmes formulations verbales lors des interrogatoires séparés. L'incident a été officiellement classé "intoxication collective aux ergots de seigle". Les vingt-trois sujets ont été internés. Dix-neuf sont décédés dans les dix-huit mois suivants. Les quatre survivants ont été <span class="redacted">███████████████████████████</span>.<br><br>
-        Le rapport du général <span class="redacted">██████</span> concluait : <em>"Nous avons observé quelque chose qui ne devrait pas être observable. Le danger n'est pas ce qui a été vu. Le danger est que ça peut être vu."</em> C'est sur cette conclusion que VERIDIAN a été fondée.</p>
+        <p style="font-size:11px;line-height:1.8;margin-top:4px">Entre le 19 et le 23 janvier 1947, dans une zone montagneuse du <span class="redacted">██████████████</span>, vingt-trois membres d'une expédition de cartographie militaire ont présenté simultanément les mêmes symptômes dissociatifs et les mêmes formulations verbales lors des interrogatoires séparés — mot pour mot. L'incident a été officiellement classé "intoxication collective aux ergots de seigle".<br><br>
+        Les vingt-trois sujets ont été internés. Dix-neuf sont décédés dans les dix-huit mois suivants — causes officielles : variées (pneumonie, suicide, arrêt cardiaque). Les quatre survivants ont été <span class="redacted">███████████████████████████</span>.<br><br>
+        <strong>Ce que le mémo ne dit pas</strong> : les vingt-trois sujets ont continué à prononcer les mêmes phrases pendant leur internement. Pas des phrases similaires. Les mêmes. Vérifiées par enregistrement phonographique. Ce détail n'apparaît pas dans le mémo officiel. Il apparaît dans une note de bas de page du rapport psychiatrique, classée séparément, retrouvée en 1994 dans une boîte sans étiquette.</p>
       </div>
     </div>
 
     <div class="section">
       <div class="section-title">04 — implantation mondiale</div>
-      <div class="field-row"><span class="field-label">BUREAUX RÉGIONAUX</span><span class="field-val">17 (désignés PÔLES)</span></div>
-      <div class="field-row"><span class="field-label">PÔLES CONFIRMÉS</span><span class="field-val">Montréal, Lagos, Singapour, São Paulo, <span class="redacted">████████</span>, Oslo, <span class="redacted">████</span>, Karachi, Nairobi</span></div>
-      <div class="field-row"><span class="field-label">PÔLES PRÉSUMÉS</span><span class="field-val">Chengdu, <span class="redacted">████████████</span> (mer de Barents)</span></div>
-      <div class="field-row"><span class="field-label">STRUCTURES-ÉCRANS</span><span class="field-val">ONG humanitaires (6), cabinets de conseil géologique (11), fondations culturelles (4), <span class="redacted">████████████████████</span></span></div>
-      <div class="coord-line">NOTE : Deux pôles figurant dans la liste originale de 1947 ne figurent plus dans aucun registre VERIDIAN depuis 1983. Leur statut est inconnu. Les demandes de clarification ont reçu la mention "SANS OBJET — NE PAS RELANCER".</div>
+      <div class="field-row"><span class="field-label">BUREAUX RÉGIONAUX</span><span class="field-val">17 (désignés PÔLES) <span class="insert">[les archives de 1989 en mentionnent 19 — aucune dissolution documentée]</span></span></div>
+      <div class="field-row"><span class="field-label">PÔLES CONFIRMÉS</span><span class="field-val">Montréal, Lagos, Singapour, São Paulo, <span class="redacted">████████</span>, Oslo, Karachi, Nairobi</span></div>
+      <div class="field-row"><span class="field-label">STRUCTURES-ÉCRANS</span><span class="field-val">ONG humanitaires (6), cabinets de conseil géologique (11), fondations culturelles (4)</span></div>
+      <div class="corruption">⚠ DEUX PÔLES ONT CESSÉ TOUTE COMMUNICATION EN 1983. LES DEMANDES DE CLARIFICATION ONT REÇU LA MENTION "SANS OBJET — NE PAS RELANCER". LE PÔLE DE <span class="redacted">████████</span> A ENVOYÉ UN UNIQUE MESSAGE EN 2002 : "NOUS SOMMES TOUJOURS ICI. NE VENEZ PAS." AUCUNE SUITE N'A ÉTÉ DONNÉE.</div>
     </div>
   </div>
 
-  <div id="tab-hier" class="tab-pane">
+  <!-- TAB HIÉRARCHIE -->
+  <div id="tab-hier" class="tab-pane" role="tabpanel">
     <div class="section">
       <div class="section-title">hiérarchie interne — structure des grades</div>
-
-      <div style="font-size:11px;color:var(--muted);margin-bottom:14px">Les grades sont désignés par des termes botaniques. Cette convention date de la fondation. Aucune explication documentée n'en justifie le choix. Les tentatives d'obtenir des clarifications ont produit des réponses contradictoires selon les sources.</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.6">Les grades sont désignés par des termes botaniques depuis la fondation. La justification officielle est "tradition". Un mémo de 1958 attribue ce choix au général <span class="redacted">██████</span> qui "refusait d'utiliser des grades militaires pour une organisation dont il niait l'existence". Ce mémo a été déclassifié par erreur en 1991 et reclassifié le lendemain. La version déclassifiée circule toujours dans les archives de niveau BRANCHE.</div>
 
       <div class="hier-item">
         <div class="tier-num">01</div>
-        <div class="tier-body">
+        <div>
           <div class="tier-name">GRAINE</div>
-          <div class="tier-desc">Personnel de terrain nouvellement intégré. Accès : niveau ÉCORCE uniquement. Pas de connaissance de la structure globale. Durée minimale avant promotion : 24 mois. Taux d'attrition au premier niveau : 34% (cause principale : <span class="redacted">███████████</span>).</div>
+          <div class="tier-desc">Personnel de terrain nouvellement intégré. Accès niveau ÉCORCE uniquement. Durée minimale avant promotion : 24 mois. Taux d'attrition : 34%.<br><span class="insert">Cause principale d'attrition indiquée dans les archives RH : "inadaptation". Ce terme n'est défini nulle part dans les documents RH accessibles.</span></div>
         </div>
       </div>
       <div class="hier-item">
         <div class="tier-num">02</div>
-        <div class="tier-body">
+        <div>
           <div class="tier-name">POUSSE</div>
-          <div class="tier-desc">Agents opérationnels confirmés. Accès : niveaux ÉCORCE + BRANCHE. Habilitation à intervenir sur incidents de classe GRIS et AMBRE. Doivent maintenir une couverture civile active.</div>
+          <div class="tier-desc">Agents opérationnels confirmés. Accès ÉCORCE + BRANCHE. Habilitation sur incidents GRIS et AMBRE. Doivent maintenir une couverture civile active — famille, logement, emploi déclaré.</div>
         </div>
       </div>
       <div class="hier-item">
         <div class="tier-num">03</div>
-        <div class="tier-body">
+        <div>
           <div class="tier-name">RAMEAU</div>
-          <div class="tier-desc">Superviseurs de cellule. Accès : ÉCORCE + BRANCHE + ARBRE. Responsables de la coordination inter-agents et de la validation des rapports de terrain. Autorisés à initier les protocoles EFFACEMENT PARTIEL.</div>
+          <div class="tier-desc">Superviseurs de cellule. Accès jusqu'à ARBRE. Autorisés à initier les protocoles EFFACEMENT PARTIEL.<br><span class="insert">Note interne non datée : "Depuis 2015, trois RAMEAU ont refusé d'initier des procédures d'effacement. Deux ont été promus. Un a disparu des registres. L'ordre des événements n'est pas clair."</span></div>
         </div>
       </div>
       <div class="hier-item">
         <div class="tier-num">04</div>
-        <div class="tier-body">
+        <div>
           <div class="tier-name">TRONC</div>
-          <div class="tier-desc">Analystes et coordinateurs régionaux. Accès : jusqu'à FEUILLE. Connaissance partielle de la nature réelle des anomalies de classe ROUGE. Accès aux archives de type II (pré-1970).</div>
+          <div class="tier-desc">Analystes et coordinateurs régionaux. Accès jusqu'à FEUILLE. Connaissance partielle des anomalies de classe ROUGE.<br><span class="insert">ANOMALIE ADMINISTRATIVE : le registre des TRONC actifs comporte actuellement 3 entrées en double — même nom, dates d'entrée différentes, dossiers médicaux incompatibles. La demande de clarification soumise en mars 2023 n'a reçu aucune réponse.</span></div>
         </div>
       </div>
       <div class="hier-item">
         <div class="tier-num">05</div>
-        <div class="tier-body">
+        <div>
           <div class="tier-name">RACINE</div>
-          <div class="tier-desc">Direction opérationnelle et stratégique. Accès total jusqu'au niveau NOCTURN. Seul grade habilité à consulter les dossiers FONDATION (incidents de classe NOIR et BLANC). Nombre actuel : <span class="redacted">██</span> individus.</div>
+          <div class="tier-desc">Direction opérationnelle et stratégique. Accès total niveau NOCTURN. Seul grade habilité à consulter les dossiers FONDATION. Nombre actuel : <span class="redacted">██</span> individus.<br><span class="insert">Le nombre de RACINE au moment de la rédaction de ce dossier est contesté : RACINE-1 indique 9 individus dans un mémo de 2022. RACINE-4 indique 7 dans un mémo de la même semaine. Les listes nominatives ne correspondent pas.</span></div>
         </div>
       </div>
       <div class="hier-item" style="border-color:var(--red)">
         <div class="tier-num" style="color:var(--red)">00</div>
-        <div class="tier-body">
+        <div>
           <div class="tier-name" style="color:var(--red)">SÈVE</div>
-          <div class="tier-desc">Grade dont l'existence est niée dans les documents de niveau ARBRE et inférieur. Identités inconnues du personnel RACINE. Accès : non défini dans les protocoles standards. Rôle présumé : orientation à long terme de la doctrine VERIDIAN. Nombre estimé par analyse structurelle : entre 3 et 7. Aucune confirmation disponible.</div>
+          <div class="tier-desc">Grade dont l'existence est officiellement niée. Identités inconnues du personnel RACINE. Rôle présumé : orientation doctrinale à long terme.<br><br>
+          <span style="color:var(--red);font-size:11px">Ce qui est connu avec certitude : en 2019, RACINE-2 et RACINE-4 ont tenté par voie de message chiffré de contacter SÈVE. Ils ne savaient pas comment. Personne au niveau RACINE ne sait comment contacter SÈVE. Personne ne sait si SÈVE a jamais été contacté ou s'est jamais manifesté. Certains documents de niveau NOCTURN portent des annotations que personne n'a rédigées.</span></div>
         </div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">niveaux de sécurité de l'information</div>
-      <div style="font-size:12px;color:var(--muted)">
-        <div class="field-row"><span class="field-label">ÉCORCE</span><span class="field-val">Protocoles de terrain génériques, cartographie des zones d'intervention</span></div>
-        <div class="field-row"><span class="field-label">BRANCHE</span><span class="field-val">Taxonomie des classes GRIS/AMBRE, procédures d'observation</span></div>
-        <div class="field-row"><span class="field-label">ARBRE</span><span class="field-val">Nature réelle des mandats VERIDIAN, liste des États partenaires</span></div>
-        <div class="field-row"><span class="field-label">FEUILLE</span><span class="field-val">Archives anomalies classe ROUGE, dossiers d'incidents majeurs</span></div>
-        <div class="field-row"><span class="field-label">NOCTURN</span><span class="field-val">Dossiers FONDATION, incidents classe NOIR, correspondances avec <span class="redacted">█████████</span></span></div>
-        <div class="field-row"><span class="field-label">[NON DÉSIGNÉ]</span><span class="field-val">Accès réservé grade SÈVE. Contenu : inconnu de tous les autres grades.</span></div>
       </div>
     </div>
 
     <div class="section">
       <div class="section-title">sanctions internes</div>
       <div class="proc-item">
-        <div class="proc-code">SANCTION-01</div>
-        <div class="proc-title">MISE EN RETRAIT TEMPORAIRE</div>
-        <div class="proc-body">Suspension des accès informatiques. Affectation à des tâches administratives. Durée : 30 à 180 jours. Applicable aux infractions mineures (non-respect des délais de rapport, contact non autorisé entre agents de différentes cellules).</div>
+        <div class="proc-code">SANCTION-01 — MISE EN RETRAIT TEMPORAIRE</div>
+        <div class="proc-title">Suspension administrative</div>
+        <div class="proc-body">Suspension des accès. Affectation administrative. Durée : 30 à 180 jours.</div>
       </div>
       <div class="proc-item">
-        <div class="proc-code">SANCTION-02</div>
-        <div class="proc-title">RÉINITIALISATION DE COUVERTURE</div>
-        <div class="proc-body">Changement d'identité civile, relocalisation, rupture de tous contacts antérieurs. Mémoire opérationnelle partiellement effacée par procédure <span class="redacted">████████</span>. Applicable aux violations de protocoles de niveau BRANCHE et supérieur.</div>
+        <div class="proc-code">SANCTION-02 — RÉINITIALISATION DE COUVERTURE</div>
+        <div class="proc-title">Changement d'identité et relocalisation</div>
+        <div class="proc-body">Nouvelle identité civile, rupture de tous contacts antérieurs. Suppression partielle de la mémoire opérationnelle par procédure médicale non détaillée dans les documents de niveau ARBRE. Applicable aux violations de niveau BRANCHE et supérieur.<br><span class="insert">Un agent ayant subi cette procédure a retrouvé son ancienne adresse par "instinct", selon le rapport de surveillance qui a suivi. Le rapport ne propose pas d'explication. Il recommande une "surveillance prolongée indéfinie".</span></div>
       </div>
       <div class="proc-item forbidden">
-        <div class="proc-code">SANCTION-03</div>
-        <div class="proc-title">DÉCOMMISSIONNEMENT DÉFINITIF</div>
-        <div class="proc-body">Procédure dont les modalités exactes ne sont décrites dans aucun document accessible en dessous du niveau NOCTURN. La mention "DÉCOMMISSIONNEMENT DÉFINITIF" figure 23 fois dans les archives de niveau ARBRE, toujours sans définition jointe. Aucun agent décommissionné n'est réapparu dans aucun registre public ou VERIDIAN.</div>
+        <div class="proc-code">SANCTION-03 — DÉCOMMISSIONNEMENT DÉFINITIF</div>
+        <div class="proc-title">Modalités : non documentées sous niveau NOCTURN</div>
+        <div class="proc-body">La mention "DÉCOMMISSIONNEMENT DÉFINITIF" figure 23 fois dans les archives de niveau ARBRE, sans définition. Aucun agent décommissionné n'est réapparu dans aucun registre.<br><br>
+        <span style="color:var(--red);font-size:11px">CE QUI EST DOCUMENTÉ : l'agent désigné TRONC-9, auteur de la note du classeur 7, a été décommissionné le 14 avril 2021. Son badge d'accès a été désactivé à 09h14. À 09h16, ce même badge a été utilisé pour accéder à l'archive physique du pôle de <span class="redacted">████████████</span>. La salle était vide à l'arrivée de l'équipe de sécurité. Aucune explication n'a été trouvée. Le registre d'accès a été classé NOCTURN le jour même.</span></div>
       </div>
     </div>
   </div>
 
-  <div id="tab-class" class="tab-pane">
+  <!-- TAB CLASSIFICATION -->
+  <div id="tab-class" class="tab-pane" role="tabpanel">
     <div class="section">
       <div class="section-title">système de classification des phénomènes</div>
-      <div style="font-size:11px;color:var(--muted);margin-bottom:14px">Les phénomènes gérés par VERIDIAN sont désignés sous le terme générique DÉCALAGES. Le terme "anomalie" est déconseillé dans les communications internes depuis la révision doctrinale de 1994, au motif qu'il "présuppose l'existence d'une norme stable" — formulation dont les implications n'ont pas été explicitées.</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.6">Depuis 1994, les phénomènes sont officiellement désignés DÉCALAGES. Cette révision terminologique a été imposée après qu'un rapport de terrain a utilisé le mot "entités" pour décrire un phénomène de Classe III. L'auteur du rapport a été sanctionné (SANCTION-01). La question de savoir si "entités" était inexact n'a pas été tranchée dans la révision doctrinale.</div>
 
       <div class="class-item cl0">
-        <div class="cl-tag" style="color:#4a7c59">CLASSE I — GRIS</div>
-        <div class="cl-name">FRÉMISSEMENT</div>
-        <div class="cl-desc">Phénomène localisé, non répétable, sans vecteur de transmission identifié. Affecte moins de 5 individus. Effets : perception altérée transitoire, désorientation spatiale, amnésie lacunaire ponctuelle. Traitement : documentation + EFFACEMENT PARTIEL si nécessaire. Résolution attendue sans intervention : 72-96h.</div>
+        <div class="cl-tag" style="color:#4a7c59">CLASSE I — GRIS / FRÉMISSEMENT</div>
+        <div class="cl-desc">Phénomène localisé, non répétable. Moins de 5 individus affectés. Effets : perception altérée transitoire, désorientation spatiale, amnésie lacunaire. Résolution naturelle attendue sous 72-96h sans intervention.<br><span class="note-inline">Taux de résolution spontanée réelle selon les archives : 61%. Les 39% restants ont été reclassifiés, non résolus, ou ont cessé d'être détectables sans raison documentée.</span></div>
       </div>
       <div class="class-item cl1">
-        <div class="cl-tag" style="color:#8b8b14">CLASSE II — AMBRE</div>
-        <div class="cl-name">INFLEXION</div>
-        <div class="cl-desc">Phénomène potentiellement répétable. Rayon d'effet jusqu'à 500m. Peut laisser des traces physiques persistantes. Susceptible d'affecter des témoins non ciblés. Déclenchement automatique de la cellule de terrain la plus proche. Délai d'intervention maximal : 6h.</div>
+        <div class="cl-tag" style="color:#8b8b14">CLASSE II — AMBRE / INFLEXION</div>
+        <div class="cl-desc">Phénomène potentiellement répétable. Rayon d'effet jusqu'à 500m. Peut laisser des traces physiques persistantes. Délai d'intervention maximal : 6h.</div>
       </div>
       <div class="class-item cl2">
-        <div class="cl-tag" style="color:#8b6914">CLASSE III — OCRE</div>
-        <div class="cl-name">RUPTURE LOCALE</div>
-        <div class="cl-desc">Zone d'effet mesurable, persistante et documentable par des tiers. Rayon jusqu'à 5km. Présence de marqueurs physiques ou biologiques anormaux. Risque de perception collective. Mobilisation d'une équipe d'effacement niveau 2. Possible recours à des autorités-écrans pour justification officielle de zone d'exclusion.</div>
+        <div class="cl-tag" style="color:#8b6914">CLASSE III — OCRE / RUPTURE LOCALE</div>
+        <div class="cl-desc">Zone d'effet mesurable et documentable. Rayon jusqu'à 5km. Présence de marqueurs physiques ou biologiques anormaux. Recours possible à des autorités-écrans pour justifier une zone d'exclusion.</div>
       </div>
       <div class="class-item cl3">
-        <div class="cl-tag" style="color:#8b3014">CLASSE IV — ROUGE</div>
-        <div class="cl-name">FRACTURE ÉTENDUE</div>
-        <div class="cl-desc">Décalage affectant une zone urbaine ou une population supérieure à 10 000 individus. Risque de documentation journalistique ou scientifique indépendante. Effets irréversibles sur certains sujets exposés. Mobilisation de ressources multi-pôles. Couverture médiatique à neutraliser. Possible coordination avec services nationaux partenaires (niveau ARBRE requis).</div>
+        <div class="cl-tag" style="color:#8b3014">CLASSE IV — ROUGE / FRACTURE ÉTENDUE</div>
+        <div class="cl-desc">Décalage affectant une population supérieure à 10 000 individus. Effets irréversibles sur certains sujets. Risque de documentation externe indépendante.<br><span class="note-inline">Précision supprimée du document public niveau ARBRE : "irréversible" désigne ici une altération permanente du traitement sensoriel — les sujets ne perçoivent plus certaines fréquences lumineuses ou sonores. Ils ne le savent généralement pas. Leurs proches parfois oui.</span></div>
       </div>
       <div class="class-item cl4">
-        <div class="cl-tag" style="color:#8b1a1a">CLASSE V — NOIR</div>
-        <div class="cl-name">DÉCHIREMENT</div>
-        <div class="cl-desc">Décalage à propagation autonome ou de vecteur non identifiable. Affecte potentiellement des dizaines de milliers d'individus. La zone d'effet peut s'étendre après cessation apparente du phénomène. Protocoles d'effacement insuffisants. Historique : 4 incidents de Classe V recensés depuis 1947. Détails accessibles niveau NOCTURN uniquement.</div>
+        <div class="cl-tag" style="color:#8b1a1a">CLASSE V — NOIR / DÉCHIREMENT</div>
+        <div class="cl-desc">Propagation autonome. Vecteur non identifié. Zone d'effet pouvant s'étendre après cessation apparente. Protocoles d'effacement insuffisants. 4 incidents Classe V depuis 1947.<br><span class="note-inline">Ce chiffre est celui du registre officiel. Un document retrouvé dans le classeur 7 (voir onglet DOCUMENTS) suggère que le registre officiel ne compte pas les incidents dans lesquels aucun agent n'a survécu pour déposer un rapport.</span></div>
       </div>
       <div class="class-item cl5" style="border-color:#4a0a4a">
-        <div class="cl-tag" style="color:#6a1a6a">CLASSE VI — BLANC</div>
-        <div class="cl-name">DISLOCATION</div>
-        <div class="cl-desc">Catégorie théorique jusqu'en <span class="redacted">████</span>. Définie comme : "phénomène dont la gestion dépasse les capacités opérationnelles de VERIDIAN dans sa configuration actuelle". Un seul incident a été provisoirement classé dans cette catégorie. Il a été reclassé CLASSE V après <span class="redacted">██</span> semaines. Les agents présents sur site ont été <span class="redacted">████████████████████████████████████████</span>.</div>
-        <span class="note-inline">NOTE MARGINALE [auteur non identifié, date: ?] : "Reclasser en Classe V ne signifie pas que c'était une Classe V."</span>
+        <div class="cl-tag" style="color:#6a1a6a">CLASSE VI — BLANC / DISLOCATION</div>
+        <div class="cl-desc">Un seul incident provisoirement classé VI, reclassé V après <span class="redacted">██</span> semaines. Les agents présents ont été décommissionnés. Leurs rapports de terrain, rédigés avant le décommissionnement, décrivent trois phénomènes différents sans aucun point commun — comme si chaque agent avait été exposé à un événement distinct au même endroit au même moment.<br><span class="note-inline">"Reclasser en Classe V ne signifie pas que c'était une Classe V." — note marginale non signée, date inconnue, retrouvée dans l'exemplaire physique.</span></div>
       </div>
     </div>
   </div>
 
-  <div id="tab-proc" class="tab-pane">
+  <!-- TAB PROCÉDURES -->
+  <div id="tab-proc" class="tab-pane" role="tabpanel">
     <div class="section">
       <div class="section-title">procédures d'observation</div>
       <div class="proc-item">
         <div class="proc-code">PROC-OBS-01 / SURVEILLANCE PASSIVE</div>
-        <div class="proc-title">Observation à distance — FRÉMISSEMENT uniquement</div>
-        <div class="proc-body">L'agent n'entre pas dans la zone d'effet. Distance minimale de sécurité : 50m pour GRIS, 200m pour AMBRE. Utilisation exclusive de capteurs distaux (optique, acoustique, électromagnétique). Aucun contact verbal ou physique avec les sujets affectés pendant la phase active.</div>
+        <div class="proc-title">Observation à distance — Classe I uniquement</div>
+        <div class="proc-body">Distance minimale : 50m (GRIS) / 200m (AMBRE). Capteurs distaux exclusivement. Aucun contact avec les sujets pendant la phase active.</div>
       </div>
       <div class="proc-item">
         <div class="proc-code">PROC-OBS-02 / OBSERVATION EMBARQUÉE</div>
-        <div class="proc-title">Présence directe sur zone — AMBRE et OCRE</div>
-        <div class="proc-body">Requiert l'équipement de protection cognitif de niveau B (désignation commerciale : <span class="redacted">██████████████</span>). L'agent doit noter toute altération de sa propre perception dans un registre séparé de son rapport principal. Les deux documents sont soumis indépendamment et comparés. Toute divergence substantielle déclenche une évaluation psychométrique de l'agent.</div>
+        <div class="proc-title">Présence directe — Classes II et III</div>
+        <div class="proc-body">Requiert l'équipement de protection cognitive niveau B. L'agent note ses propres altérations perceptuelles dans un registre séparé du rapport principal. Les deux documents sont comparés — toute divergence significative déclenche une évaluation psychométrique.<br><span class="note-inline">L'équipement niveau B est efficace à 73% sur les incidents OCRE, 31% sur les incidents ROUGE. Ces chiffres figurent dans un message interne de 2019. Ils n'ont pas été intégrés dans la révision des procédures. La révision a été annoncée. Elle n'a pas eu lieu.</span></div>
       </div>
     </div>
 
     <div class="section">
-      <div class="section-title">procédures d'intervention et d'effacement</div>
+      <div class="section-title">procédures d'effacement</div>
       <div class="proc-item">
         <div class="proc-code">PROC-EFF-01 / EFFACEMENT PARTIEL</div>
-        <div class="proc-title">Neutralisation des témoins directs</div>
-        <div class="proc-body">Applicable aux cas de moins de 20 témoins directs. Recours aux agents de spécialité MÉMOIRE (grade POUSSE et supérieur). Techniques : entretien de réorientation narrative, administration de <span class="redacted">████████</span> (classe IIIb), substitution documentaire. Délai maximal : 48h après l'incident. Au-delà : procédure EFFACEMENT ÉTENDU requise.</div>
+        <div class="proc-title">Neutralisation des témoins directs (moins de 20 individus)</div>
+        <div class="proc-body">Entretien de réorientation narrative, administration de composé classe IIIb (effets : suppression des souvenirs associatifs récents sur une fenêtre de 18-72h, sans altération de la mémoire procédurale), substitution documentaire. Délai maximal : 48h post-incident.</div>
       </div>
       <div class="proc-item">
         <div class="proc-code">PROC-EFF-02 / CONFINEMENT PHYSIQUE</div>
         <div class="proc-title">Isolation de zone</div>
-        <div class="proc-body">Pour les décalages laissant des marqueurs physiques persistants. Recours à des autorités-écrans pour justification officielle (contamination chimique, risque géologique, exercice militaire). Durée maximale de maintien de couverture sans réexamen : 90 jours. 7 zones de confinement actives au jour de la rédaction du présent document. Localisations : voir registre PÔLE-TERRAIN, niveau FEUILLE.</div>
-      </div>
-      <div class="proc-item">
-        <div class="proc-code">PROC-INT-07 / NEUTRALISATION DE SOURCE</div>
-        <div class="proc-title">Suppression de documentation indépendante</div>
-        <div class="proc-body">Applicable lorsque des données sur un incident ont été recueillies par des tiers non contrôlés (journalistes, chercheurs, agences gouvernementales étrangères). Coordination avec les cellules INFORMATION. Degrés : désaccréditation, suppression technique, <span class="redacted">███████████████████</span>. Degré III requiert autorisation RACINE.</div>
+        <div class="proc-body">Recours à des autorités-écrans pour justification officielle (contamination chimique, risque géologique, exercice militaire). 7 zones de confinement actives à la date de rédaction.<br><span class="note-inline">Une zone de confinement (localisation : niveau FEUILLE) est active depuis 31 ans. La justification officielle initiale était "fuite de gaz industriel". Cette justification n'a jamais été renouvelée. La zone est toujours interdite d'accès. Aucun riverain ne semble l'avoir remarqué.</span></div>
       </div>
     </div>
 
     <div class="section">
       <div class="section-title">procédures interdites</div>
       <div class="proc-item forbidden">
-        <div class="proc-code">INTERDIT-01 — PROHIBITION ABSOLUE</div>
-        <div class="proc-title">Communication avec l'anomalie</div>
-        <div class="proc-body">Il est strictement interdit de tenter d'établir une communication, quelle qu'en soit la forme, avec tout phénomène présentant des caractéristiques de classe OCRE ou supérieure. Cette interdiction a été émise en 1971 après l'incident de <span class="redacted">████████████</span>. Le rapport complet de cet incident est classé NOCTURN. Les tentatives de communication au-dessous de la classe OCRE sont "déconseillées" (note : la distinction entre "interdiction" et "déconseillé" n'est pas explicitée dans les textes de doctrine disponibles au niveau ARBRE).</div>
+        <div class="proc-code">INTERDIT-01 — COMMUNICATION AVEC L'ANOMALIE</div>
+        <div class="proc-title">Prohibition absolue — Classes III et supérieures</div>
+        <div class="proc-body">Interdiction émise en 1971 après l'incident de <span class="redacted">████████████</span>. Le rapport complet est classé NOCTURN. Ce qui est accessible : l'équipe d'intervention comptait 11 agents. 8 ont survécu. Les 8 survivants ont produit des rapports identiques — même structure de phrases, même ordre des événements — malgré des entretiens conduits séparément. Leur évaluation psychométrique collective a été classée NOCTURN. INTERDIT-01 a été émis 72h après.<br><span class="note-inline">Les Classes I et II sont "déconseillées". La distinction entre "interdit" et "déconseillé" n'est pas explicitée. Elle n'a pas été demandée non plus.</span></div>
       </div>
       <div class="proc-item forbidden">
-        <div class="proc-code">INTERDIT-02 — PROHIBITION ABSOLUE</div>
-        <div class="proc-title">Documentation photographique directe — classe NOIR</div>
-        <div class="proc-body">Aucun enregistrement visuel direct d'un phénomène de Classe V ou VI n'est autorisé. L'interdiction s'étend aux croquis réalisés de mémoire dans les 48 heures suivant l'exposition. Motif documenté : <span class="redacted">███████████████████████████████████████████████████████████</span>.</div>
+        <div class="proc-code">INTERDIT-02 — DOCUMENTATION VISUELLE DIRECTE — CLASSES V ET VI</div>
+        <div class="proc-title">Prohibition absolue</div>
+        <div class="proc-body">Aucun enregistrement visuel direct autorisé. Extension aux croquis réalisés dans les 48h suivant l'exposition.<br>Motif documenté : altération cognitive rétroactive de l'image perçue lors de sa reproduction — le sujet qui tente de dessiner ce qu'il a vu produit une image de ce qu'il <em>aurait dû</em> voir selon ses schémas cognitifs préexistants, effaçant ainsi le souvenir de l'original. Le processus est non réversible et s'accélère avec chaque tentative.</div>
       </div>
       <div class="proc-item forbidden">
-        <div class="proc-code">INTERDIT-03 — PROHIBITION ABSOLUE</div>
-        <div class="proc-title">Réexposition volontaire</div>
-        <div class="proc-body">Tout agent ayant été exposé à un décalage de Classe IV ou supérieure ne peut légalement retourner sur aucune zone d'incident active ou archivée. Les demandes de dérogation à cette règle ont toutes été refusées depuis 1947, à l'exception d'une seule. Le demandeur de cette dérogation est désigné dans les registres sous la mention <span class="redacted">█████████████</span>. Son dossier ne contient aucune information postérieure à sa réexposition.</div>
+        <div class="proc-code">INTERDIT-03 — RÉEXPOSITION VOLONTAIRE</div>
+        <div class="proc-title">Prohibition absolue — Classes IV et supérieures</div>
+        <div class="proc-body">Aucun agent exposé à une Classe IV ou supérieure ne peut retourner sur une zone active ou archivée. Toutes les demandes de dérogation ont été refusées depuis 1947, sauf une. Le demandeur est désigné <span class="redacted">█████████████</span> dans les registres. Son dossier s'arrête à la date de sa réexposition.<br><span class="note-inline">Ce n'est pas que son dossier a été classifié. C'est qu'il ne contient plus rien après cette date. Les pages suivantes existent — elles sont blanches. Le papier est le bon. L'encre a disparu.</span></div>
       </div>
     </div>
   </div>
 
-  <div id="tab-anom" class="tab-pane">
+  <!-- TAB ANOMALIES -->
+  <div id="tab-anom" class="tab-pane" role="tabpanel">
+
     <div class="anomaly">
       <div class="anomaly-head">
-        <span class="anomaly-id">DOSSIER DÉCALAGE — VRD-0044-AUBE</span>
+        <span class="anomaly-id">DOSSIER VRD-0044-AUBE</span>
         <span class="badge badge-r">CLASSE IV — ROUGE</span>
       </div>
       <div class="anomaly-body">
         <div class="anomaly-row"><span class="field-label">DÉSIGNATION</span><span class="field-val">AUBE PERSISTANTE</span></div>
         <div class="anomaly-row"><span class="field-label">DATE DÉCOUVERTE</span><span class="field-val">17 août 1998</span></div>
-        <div class="anomaly-row"><span class="field-label">LOCALISATION</span><span class="field-val">Zone agricole, <span class="redacted">██████████</span>, 47° nord — coordonnées exactes : niveau FEUILLE</span></div>
-        <div class="anomaly-row"><span class="field-label">STATUT ACTUEL</span><span class="field-val">CONFINEMENT ACTIF — Révision tous les 18 mois</span></div>
-        <div style="height:0.5px;background:var(--border);margin:10px 0"></div>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:10px"><strong style="color:var(--ink)">DESCRIPTION :</strong> Zone circulaire de 2,3 km de diamètre dans laquelle la luminosité ambiante correspond systématiquement à l'aube, indépendamment de l'heure solaire réelle et des conditions météorologiques. L'effet n'est pas photographiable depuis l'extérieur de la zone. Les appareils photographiques introduits dans la zone produisent des images correspondant à la luminosité extérieure réelle. Les témoins visuels directs, eux, perçoivent l'aube. Sept personnes ayant séjourné plus de 40 heures dans la zone ont ultérieurement développé une incapacité permanente à percevoir toute lumière artificielle comme adéquate.</p>
+        <div class="anomaly-row"><span class="field-label">LOCALISATION</span><span class="field-val">Zone agricole, <span class="redacted">██████████</span> — coordonnées exactes : niveau FEUILLE</span></div>
+        <div class="anomaly-row"><span class="field-label">STATUT ACTUEL</span><span class="field-val">CONFINEMENT ACTIF</span></div>
+        <div class="sep"></div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:10px"><strong style="color:var(--ink)">DESCRIPTION :</strong> Zone circulaire de 2,3 km de diamètre dans laquelle la luminosité perçue correspond systématiquement à l'aube, quelle que soit l'heure. Les instruments de mesure photométrique enregistrent la luminosité extérieure réelle. Les appareils photo produisent des images de la luminosité réelle. Seuls les témoins directs voient l'aube. Les sept personnes ayant séjourné plus de 40 heures dans la zone ont ensuite développé une intolérance permanente à la lumière artificielle — non une douleur physique, mais une conviction croissante et non articulable que cette lumière est fausse. Deux d'entre elles ont cessé de dormir la nuit. Elles préfèrent rester debout et regarder dehors.</p>
         <div class="report-block">
-          <div class="report-head">EXTRAIT RAPPORT AGENT RAMEAU-7 / CELLULE SUD-OUEST / 23 AOÛT 1998</div>
-          <p style="line-height:1.7">J'ai passé six heures dans la zone. Mon instrument de mesure photométrique indiquait 87 000 lux (ensoleillement direct plein été) à 23h15. Ma vision enregistrait ce que je ne peux décrire qu'comme "l'impression que quelque chose vient de commencer". Je n'ai pas ressenti de peur. J'ai ressenti quelque chose de pire : de la conviction. La conviction que je me trouvais exactement là où il fallait être exactement au bon moment. J'ai demandé à être déchargé du dossier deux jours après. Ma demande a été refusée. Je renouvelle cette demande par écrit pour la quatrième fois.</p>
+          <div class="report-head">RAPPORT AGENT RAMEAU-7 / 23 AOÛT 1998</div>
+          J'ai passé six heures dans la zone. Mon photomètre indiquait 87 000 lux à 23h15. Ma vision enregistrait ce que je ne sais pas nommer autrement que : "le moment juste avant que quelque chose commence". Pas de peur. Quelque chose de pire. La certitude que j'étais exactement là où il fallait être. Que tout le reste de ma vie avait été une attente de ça.<br><br>J'ai demandé à être déchargé du dossier deux jours après. Refusé. Je renouvelle cette demande pour la quatrième fois par écrit.<br><br><em>Je ne dors plus bien depuis août.</em>
         </div>
-        <div class="anomaly-row" style="margin-top:10px"><span class="field-label">EFFETS ENVIRONNEMENTAUX</span><span class="field-val">Croissance végétale accélérée à la périphérie de la zone. Taux de mélatonine anormalement bas chez les animaux résidant dans un rayon de 500m. Trois décès inexpliqués de bovins à l'intérieur de la zone (neuf mois post-découverte).</span></div>
-        <div class="anomaly-row"><span class="field-label">HYPOTHÈSE PRINCIPALE</span><span class="field-val">Ignorée depuis la réunion RACINE de 2003 sans remplacement documenté</span></div>
-        <span class="note-inline">NOTE MARGINALE [non signée, retrouvée dans le dossier physique version 2011] : "Ce n'est pas de la lumière. Ce sont des informations."</span>
+        <div class="agent-conflict">
+          <div class="conflict-head">DÉSACCORD INTERNE — NON RÉSOLU</div>
+          RAMEAU-7 (2001) : "La zone est passive. Elle ne fait rien. Elle existe, c'est tout."<br>
+          TRONC-2 (2001) : "Avec respect, RAMEAU-7 a passé 6h dans la zone. Je pense qu'il n'est pas le bon juge de ce qu'elle fait ou ne fait pas."<br>
+          RAMEAU-7 (2002) : "TRONC-2 n'y est pas allé. Je pense qu'il n'est pas le bon juge non plus."<br>
+          <span class="note-inline">Aucune décision arbitrale n'a été rendue. Les deux ont raison probablement.</span>
+        </div>
+        <div class="anomaly-row"><span class="field-label">HYPOTHÈSE PRINCIPALE</span><span class="field-val">Ignorée depuis la réunion RACINE de 2003. Aucun remplacement documenté.</span></div>
+        <div class="meta-anomaly">
+          <div class="meta-label">⚠ ANOMALIE MÉTA-DOCUMENTAIRE</div>
+          La tentative de clôture de ce dossier en 2016 a été refusée par le niveau RACINE. Le motif de refus est entièrement caviardé. Une note manuscrite figure au bas du formulaire de refus, encre différente : <em>"Ce n'est pas nous qui gardons AUBE sous surveillance. Relire les données de fréquentation de zone depuis 2010."</em><br><br>Les données de fréquentation de 2010 à 2016 montrent 34 entrées en zone par des agents VERIDIAN. Elles montrent également 34 entrées supplémentaires effectuées par des badges d'agents qui étaient, à ces dates, décédés ou décommissionnés.
+        </div>
       </div>
     </div>
 
     <div class="anomaly">
       <div class="anomaly-head">
-        <span class="anomaly-id">DOSSIER DÉCALAGE — VRD-0109-ÉCO</span>
-        <span class="badge badge-r">CLASSE III — OCRE</span>
+        <span class="anomaly-id">DOSSIER VRD-0109-ÉCO</span>
+        <span class="badge badge-a">CLASSE III — OCRE</span>
       </div>
       <div class="anomaly-body">
         <div class="anomaly-row"><span class="field-label">DÉSIGNATION</span><span class="field-val">L'ÉCHO</span></div>
-        <div class="anomaly-row"><span class="field-label">DATE DÉCOUVERTE</span><span class="field-val">3 mars 2004</span></div>
-        <div class="anomaly-row"><span class="field-label">LOCALISATION</span><span class="field-val">Immeuble résidentiel, <span class="redacted">████</span> — bâtiment acquis par entité-écran VERIDIAN en 2005</span></div>
-        <div class="anomaly-row"><span class="field-label">STATUT ACTUEL</span><span class="field-val">SURVEILLANCE PASSIVE — Niveau d'alerte : stable</span></div>
-        <div style="height:0.5px;background:var(--border);margin:10px 0"></div>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:10px"><strong style="color:var(--ink)">DESCRIPTION :</strong> L'appartement du 4e étage, couloir gauche, produit des sons correspondant aux conversations tenues dans ce même appartement avec un décalage variable entre 2 et 9 jours. Le phénomène n'est perceptible que dans l'appartement lui-même, pas dans les logements adjacents. Les enregistrements techniques captent un silence là où les occupants perçoivent clairement des voix. Dix-sept familles ont séjourné dans cet appartement entre 2004 et 2007. L'une d'elles refusait de partir malgré la présence du phénomène, au motif que "les voix disent des choses utiles".</p>
+        <div class="anomaly-row"><span class="field-label">DATE DÉCOUVERTE</span><span class="field-val">3 mars 2004 <span class="insert">[voir anomalie administrative ci-dessous]</span></span></div>
+        <div class="anomaly-row"><span class="field-label">LOCALISATION</span><span class="field-val">Immeuble résidentiel, <span class="redacted">████</span> — acquis par entité-écran VERIDIAN en 2005</span></div>
+        <div class="anomaly-row"><span class="field-label">STATUT ACTUEL</span><span class="field-val">SURVEILLANCE PASSIVE — stable</span></div>
+        <div class="sep"></div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:10px"><strong style="color:var(--ink)">DESCRIPTION :</strong> L'appartement 4B produit, à intervalles irréguliers, des sons correspondant à des conversations qui auront lieu dans cet appartement entre 2 et 9 jours plus tard. Le phénomène n'est perceptible qu'à l'intérieur du logement — les instruments ne captent rien. 17 familles y ont séjourné entre 2004 et 2007. Une seule refusait de partir : "les voix disent des choses utiles". Cette famille a été relogée de force. Lors de l'entretien de départ, la mère a indiqué que les voix l'avaient "prévenue" de cette conversation trois jours avant qu'elle ait lieu.</p>
         <div class="report-block">
-          <div class="report-head">EXTRAIT RAPPORT TRONC-3 / ANALYSE SÉMANTIQUE / JANVIER 2007</div>
-          <p style="line-height:1.7">Après transcription des voix rapportées par 4 familles distinctes, il apparaît que les contenus présentent une cohérence narrative que nous ne pouvons pas expliquer par un biais de mémorisation. Trois conversations distinctes, rapportées par trois familles n'ayant eu aucun contact entre elles, semblent former un continuum. Ce continuum décrit une situation dont nous ne comprenons pas encore la portée. J'ai soumis les transcriptions au niveau FEUILLE. Elles m'ont été retournées avec la mention "INSUFFISANT POUR CLASSIFICATION". Je ne comprends pas cette réponse.</p>
+          <div class="report-head">RAPPORT TRONC-3 / ANALYSE SÉMANTIQUE / JANVIER 2007</div>
+          Après transcription des voix rapportées par 4 familles distinctes n'ayant eu aucun contact entre elles, les contenus forment un continuum narratif. Ce n'est pas une coïncidence de thème. C'est la même histoire, racontée en fragments, dans le désordre, par des personnes différentes, sur trois ans. Je ne sais pas quelle histoire. Je n'en vois pas encore la fin.<br><br>J'ai soumis les transcriptions au niveau FEUILLE. Retournées avec la mention "INSUFFISANT POUR CLASSIFICATION". Je ne comprends pas cette réponse. Si les transcriptions sont insuffisantes, qu'est-ce qui serait suffisant ?<br><br>Je ne pose pas la question de manière rhétorique.
         </div>
-        <div class="anomaly-row" style="margin-top:10px"><span class="field-label">ANOMALIE DANS LE DOSSIER</span><span class="field-val">La date d'ouverture officielle du dossier est le 3 mars 2004. Une note de terrain rédigée par un agent grade GRAINE comporte la date du 3 mars 2004 mais décrit une situation correspondant à une surveillance de plusieurs semaines déjà en cours. Aucune explication dans le dossier.</span></div>
+        <div class="meta-anomaly">
+          <div class="meta-label">⚠ ANOMALIE MÉTA-DOCUMENTAIRE</div>
+          Le dossier a été officiellement ouvert le 3 mars 2004. Une note de terrain datée du 3 mars 2004 décrit cependant une situation de surveillance "en cours depuis plusieurs semaines". L'auteur de cette note est identifié comme un agent GRAINE — grade non habilité à ouvrir des surveillances autonomes. L'agent en question n'apparaît dans aucun registre VERIDIAN avant ou après cette date.<br><br>
+          Un détail supplémentaire : la note de terrain décrit un appartement "au quatrième étage, couloir gauche". La désignation interne de VERIDIAN pour cet appartement, adoptée lors de l'ouverture officielle du dossier, est "appartement 4B". 4B est au quatrième étage, couloir gauche. La note antérieure utilisait cette désignation avant qu'elle existe.
+        </div>
       </div>
     </div>
 
     <div class="anomaly">
       <div class="anomaly-head">
-        <span class="anomaly-id">DOSSIER DÉCALAGE — VRD-0271-SIL</span>
+        <span class="anomaly-id">DOSSIER VRD-0271-SIL</span>
         <span class="badge badge-r">CLASSE V — NOIR</span>
       </div>
       <div class="anomaly-body">
         <div class="anomaly-row"><span class="field-label">DÉSIGNATION</span><span class="field-val">LE SILENCE DE <span class="redacted">█████████</span></span></div>
         <div class="anomaly-row"><span class="field-label">DATE DÉCOUVERTE</span><span class="field-val"><span class="redacted">████████████</span></span></div>
-        <div class="anomaly-row"><span class="field-label">LOCALISATION</span><span class="field-val">CLASSIFIÉ NOCTURN — accès refusé au niveau FEUILLE</span></div>
+        <div class="anomaly-row"><span class="field-label">LOCALISATION</span><span class="field-val">CLASSIFIÉ NOCTURN</span></div>
         <div class="anomaly-row"><span class="field-label">STATUT ACTUEL</span><span class="field-val"><span class="redacted">████████████████████████████</span></span></div>
-        <div style="height:0.5px;background:var(--border);margin:10px 0"></div>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:10px"><strong style="color:var(--ink)">DESCRIPTION (fragments déclassifiés — niveau ARBRE) :</strong> Le phénomène affecte la capacité des sujets exposés à conceptualiser l'absence. Les sujets ne peuvent plus former mentalement la notion de "rien". Les effets initiaux semblent bénins. Les effets à long terme ont conduit à <span class="redacted">█████████████████████████████████████████████████████████</span>. La zone d'effet a présenté une expansion non linéaire pendant <span class="redacted">██</span> mois avant stabilisation. Motif de stabilisation : inconnu.</p>
+        <div class="sep"></div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:10px"><strong style="color:var(--ink)">DESCRIPTION (fragments déclassifiés) :</strong> Le phénomène affecte la capacité des sujets exposés à conceptualiser l'absence. Ils ne peuvent plus former mentalement la notion de "rien" — pas le mot, la notion. Les premières semaines, les sujets décrivent une amélioration de leur humeur générale, une diminution de l'anxiété, une sensation de plénitude. À partir du troisième mois, ils commencent à avoir des difficultés à terminer les phrases. À partir du sixième mois, ils ne peuvent plus expliquer pourquoi certaines choses les inquiétaient avant. Pas parce qu'ils sont rassurants. Parce qu'ils ne perçoivent plus l'espace dans lequel l'inquiétude existait.</p>
         <div class="classified-block">
-          <p style="font-size:12px">CE DOSSIER CONTIENT 847 PAGES SUPPLÉMENTAIRES CLASSIFIÉES NOCTURN.<br>L'ACCÈS AU DOCUMENT COMPLET A ÉTÉ DEMANDÉ À 14 REPRISES PAR DES AGENTS GRADE TRONC ET RACINE.<br>9 DEMANDES ONT ÉTÉ REFUSÉES.<br>4 DEMANDES N'ONT PAS REÇU DE RÉPONSE.<br>1 DEMANDE A CONDUIT À UN DÉCOMMISSIONNEMENT DÉFINITIF DE SON AUTEUR.<br><br>LE PRÉSENT RÉSUMÉ EST LE SEUL DOCUMENT ACCESSIBLE EN DESSOUS DU NIVEAU NOCTURN.</p>
+          <p style="font-size:12px">CE DOSSIER CONTIENT 847 PAGES SUPPLÉMENTAIRES CLASSIFIÉES NOCTURN.<br><br>14 DEMANDES D'ACCÈS : 9 REFUSÉES, 4 SANS RÉPONSE, 1 A CONDUIT À UN DÉCOMMISSIONNEMENT DÉFINITIF.<br><br>LE PRÉSENT RÉSUMÉ EST LE SEUL DOCUMENT ACCESSIBLE EN DESSOUS DU NIVEAU NOCTURN.<br><br><span style="color:var(--amber)">NOTE : Une copie non autorisée de 3 pages de ce dossier a circulé en 2018 dans la cellule de Nairobi. Les agents qui l'ont lue ont spontanément cessé d'utiliser le mot "rien" dans leurs communications. Quand on leur a signalé ce fait, ils n'ont pas compris ce qu'on leur disait.</span></p>
         </div>
       </div>
     </div>
+
+    <div class="anomaly" style="border-color:var(--red)">
+      <div class="anomaly-head" style="background:var(--color-background-secondary)">
+        <span class="anomaly-id" style="color:var(--red)">DOSSIER VRD-????-??? — STATUT : NON OUVERT</span>
+        <span class="badge badge-r">CLASSE : NON ASSIGNÉE</span>
+      </div>
+      <div class="anomaly-body">
+        <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Ce dossier n'a pas été ouvert par le Bureau d'Archivage. Il est apparu dans le système de gestion documentaire le 7 janvier 2024 à 03h17. Il porte un numéro de dossier qui ne suit pas le système de numérotation VERIDIAN. Son contenu, accessible à tous les niveaux, est le suivant :</p>
+        <div class="report-block" style="border-color:var(--red)">
+          Vous avez documenté 1 847 phénomènes.<br>
+          Nous en comptons 1 848.<br>
+          Le dernier est ce document.
+        </div>
+        <div class="anomaly-row"><span class="field-label">RÉPONSE VERIDIAN</span><span class="field-val">Le dossier a été supprimé le 7 janvier 2024 à 08h44. Il était de retour dans le système le 7 janvier 2024 à 08h45. Il n'a pas été supprimé depuis.</span></div>
+      </div>
+    </div>
+
   </div>
 
-  <div id="tab-docs" class="tab-pane">
+  <!-- TAB DOCUMENTS -->
+  <div id="tab-docs" class="tab-pane" role="tabpanel">
     <div class="section">
       <div class="section-title">extraits de communications internes</div>
 
-      <div class="memo"><span class="memo-label">MESSAGE CHIFFRÉ — ÉMETTEUR RACINE-2 → RACINE-4 — 14 NOV. 2019</span>
-        <p style="font-size:11px;line-height:1.8">La révision du protocole OBS-02 ne peut pas attendre. Les équipements de protection cognitive de niveau B ont montré une efficacité de 73% sur les incidents OCRE traités depuis 2017. Pour les ROUGE, l'efficacité chute à 31%. Pour les agents exposés à VRD-0271, l'équipement n'a eu <span class="redacted">██████████████████████████████████████████</span>. Je sais que ce n'est pas dans mon périmètre mais si SÈVE n'est pas informé de ça, quelqu'un doit leur transmettre. Je ne sais pas comment les contacter. Est-ce que toi tu sais ?<br><br>[Réponse de RACINE-4, même fil, 15 nov. 2019 :]<br>Non. Je pensais que tu savais.</p>
+      <div class="memo"><span class="memo-label">MESSAGE CHIFFRÉ — RACINE-2 → RACINE-4 — 14 NOV. 2019</span>
+        <p style="font-size:11px;line-height:1.8;margin-top:4px">La révision du protocole OBS-02 ne peut pas attendre. Les équipements B ont montré 73% d'efficacité sur OCRE, 31% sur ROUGE. Sur les agents exposés à VRD-0271, l'équipement n'a eu aucun effet mesurable — ni protecteur ni aggravant, comme si l'équipement n'avait pas été présent. Je ne comprends pas ce que ça veut dire.<br><br>
+        Si SÈVE n'est pas informé de ça, quelqu'un doit le faire. Je ne sais pas comment les contacter. Est-ce que toi tu sais ?<br><br>
+        [Réponse RACINE-4, 15 nov. 2019 :] Non. Je pensais que tu savais.<br><br>
+        [Note en marge de RACINE-2, même document, date différente :] <em>J'ai demandé à RACINE-1, RACINE-3, RACINE-6. Aucun ne sait. Je commence à penser que personne ne sait. Je commence à penser que c'est voulu. Je ne sais pas par qui.</em></p>
       </div>
 
-      <div class="memo"><span class="memo-label">NOTE INTERNE — CHERCHEUR TRONC-9 / DÉPARTEMENT ANALYSE / DATE : <span class="redacted">████████</span></span>
-        <p style="font-size:11px;line-height:1.8">Observation préliminaire — à ne pas inclure dans le rapport officiel avant validation.<br><br>En compilant les données de 22 dossiers actifs de classe AMBRE et supérieure, j'ai noté que la distribution géographique des incidents ne suit pas un modèle aléatoire. Elle suit un modèle. Je ne sais pas encore lequel. Mais il y a un modèle. Si ce que je pense est correct, alors VERIDIAN n'intervient pas sur des phénomènes désordonnés. Elle intervient sur <span class="redacted">████████████████████████</span>. Je ne soumets pas ce document par les canaux officiels. Je le laisse dans les archives physiques du pôle, classeur 7, sous l'onglet "ADMINISTRATIF DIVERS".</p>
+      <div class="memo"><span class="memo-label">NOTE — TRONC-9 / DÉPARTEMENT ANALYSE / DATE NON LISIBLE</span>
+        <p style="font-size:11px;line-height:1.8;margin-top:4px">Observation préliminaire. Je ne la soumets pas par les canaux officiels — je la laisse dans le classeur 7, onglet "ADMINISTRATIF DIVERS".<br><br>
+        La distribution géographique des 22 dossiers actifs de classe AMBRE et supérieure ne suit pas un modèle aléatoire. Elle suit un modèle. Je ne sais pas encore lequel. Mais les intervalles entre les incidents, les distances entre les zones, la progression des classes dans le temps — tout ça converge.<br><br>
+        Si ce que je pense est correct, alors VERIDIAN n'intervient pas sur des phénomènes désordonnés. Elle intervient sur les étapes d'un processus. Je ne sais pas quel processus. Je ne sais pas à quelle étape nous en sommes.<br><br>
+        <em>Je ne sais pas si VERIDIAN le sait non plus.</em></p>
       </div>
 
-      <div class="memo"><span class="memo-label">FORMULAIRE STANDARD DE CLÔTURE DE DOSSIER — VRD-0044-AUBE — TENTATIVE DE CLÔTURE, 2016</span>
-        <p style="font-size:11px;line-height:1.8">Motif de clôture proposé : "Le phénomène est stable et maîtrisé. Le risque de perception publique est éliminé. Recommandation : reclassification en archive."<br><br>DÉCISION NIVEAU RACINE : REFUSÉE.<br>Motif du refus : <span class="redacted">████████████████████████████████████████████████████████████████████████</span>.<br><br>[NOTE MARGINALE manuscrite au bas du formulaire, encre différente, non datée :]<br>"Ce n'est pas nous qui gardons AUBE sous surveillance. Relire les données de fréquentation de zone depuis 2010."</p>
+      <div class="memo"><span class="memo-label">PV RÉUNION DOCTRINE — SIÈGE CENTRAL — DATE CAVIARDÉE</span>
+        <p style="font-size:11px;line-height:1.8;margin-top:4px">[...] La question de l'intentionnalité des anomalies de Classe V reste ouverte. La position officielle est que cette question est "opérationnellement non pertinente". Trois membres RACINE ont voté contre.<br><br>
+        Le directeur a conclu : "Notre rôle est de gérer, non de comprendre." La salle a applaudi. La phrase figure dans la charte de 2019.<br><br>
+        [Note ajoutée à la main dans la marge, sans date :] <em>Si notre rôle est de gérer, pourquoi est-ce que le nombre de dossiers non résolus augmente chaque année depuis 2011 ? Qui a applaudi exactement ?</em></p>
       </div>
 
-      <div class="memo"><span class="memo-label">EXTRAIT PROCÈS-VERBAL — RÉUNION DOCTRINE — SIÈGE CENTRAL — ANNÉE <span class="redacted">████</span></span>
-        <p style="font-size:11px;line-height:1.8">[...] Le point 4 de l'ordre du jour a été abordé mais non résolu. La question de savoir si les anomalies de Classe V présentent une intentionnalité reste ouverte. La position officielle de VERIDIAN est que cette question est "opérationnellement non pertinente". Trois membres RACINE ont voté contre l'adoption de cette position. Leurs noms ne figurent pas au procès-verbal conformément à la procédure de vote interne. [...]<br><br>Le directeur a conclu en rappelant que "notre rôle est de gérer, non de comprendre." La phrase a été applaudie. Elle figure désormais dans la charte interne de 2019. Elle ne figure pas dans la version de la charte envoyée aux États partenaires.</p>
+      <div class="memo"><span class="memo-label">NOTE RETROUVÉE DANS LA BOÎTE SANS ÉTIQUETTE — PÔLE DE <span class="redacted">████████████</span> — DATE INCONNUE</span>
+        <p style="font-size:11px;line-height:1.8;margin-top:4px">Le document suivant n'a pas d'auteur identifié. Il n'est associé à aucun dossier. Il a été retrouvé dans une boîte d'archives physiques derrière un meuble, lors d'un déménagement de locaux en 2019. Le papier est du bon format VERIDIAN. La police de caractères correspond à une machine à écrire dont le modèle n'a été produit qu'entre 1953 et 1961. Le contenu :</p>
+        <div class="report-block" style="font-style:italic;line-height:2">
+          Nous avons cru que notre travail consistait à protéger les gens de ce qu'ils ne doivent pas savoir.<br>
+          Nous avons cru que nous savions ce qu'ils ne devaient pas savoir.<br>
+          Nous avons eu tort sur les deux points.<br>
+          Nous n'avons jamais su ce que nous cachions.<br>
+          Nous avons seulement su que ça devait être caché.<br>
+          La différence importe.
+        </div>
       </div>
     </div>
   </div>
 
   <div class="warning-final">
     <div class="warning-title">NOTE DE CLÔTURE — BUREAU D'ARCHIVAGE PERMANENT — NIVEAU NOCTURN</div>
-    <p style="font-size:12px;line-height:1.9;color:var(--ink)">Après soixante-dix-huit ans d'activité, VERIDIAN a documenté 1 847 décalages, en a résolu 1 203, en a contenus 589, et en a perdus 55.<br><br>La mention "perdus" est une convention interne désignant les dossiers dans lesquels le phénomène a cessé d'être détectable sans que les équipes d'intervention en aient compris la raison — ni même, dans plusieurs cas, su si la cessation était un achèvement, un déplacement, ou autre chose.<br><br>Les 1 847 dossiers représentent les phénomènes que VERIDIAN a trouvés.<br><br>La doctrine de l'organisation repose sur l'hypothèse que les phénomènes trouvés sont les phénomènes existants.<br><br>Cette hypothèse n'a jamais été vérifiée.<br><br>Elle n'a jamais été mise en doute dans aucun document officiel.<br><br>Elle a été mise en doute dans un document non officiel retrouvé dans le classeur 7, onglet "ADMINISTRATIF DIVERS", du pôle de <span class="redacted">████████████</span>. Ce document a été classé NOCTURN. Son auteur a été <span class="redacted">█████████████████</span>.<br><br>La question posée dans ce document était la suivante :</p>
-    <p style="font-size:13px;line-height:2;color:var(--ink);margin-top:14px;font-style:italic">"Et si certains des phénomènes que nous surveillons nous surveillaient également — et avaient simplement décidé de nous laisser croire que c'est nous qui décidons quand un dossier est ouvert ?"</p>
-    <p style="font-size:10px;color:var(--muted);margin-top:14px;letter-spacing:1px">FIN DU DOCUMENT SOUCHE C — LA REPRODUCTION OU TRANSMISSION DE CE DOCUMENT EST PASSIBLE DE SANCTION-03</p>
+    <p style="font-size:12px;line-height:1.9;color:var(--ink)">Après soixante-dix-huit ans d'activité, VERIDIAN a documenté 1 847 décalages, en a résolu 1 203, contenus 589, et perdus 55.<br><br>
+    "Perdus" désigne les dossiers dans lesquels le phénomène a cessé d'être détectable sans que les équipes sachent si c'était un achèvement, un déplacement, ou autre chose.<br><br>
+    La doctrine repose sur l'hypothèse que les phénomènes trouvés sont les phénomènes existants. Cette hypothèse n'a jamais été vérifiée. Elle n'a jamais été remise en doute dans aucun document officiel.<br><br>
+    Elle l'a été dans le classeur 7. Son auteur a été décommissionné. Son badge a servi à ouvrir une archive deux minutes après sa désactivation.<br><br>
+    La question posée dans le classeur 7 était : <em>"Et si certains des phénomènes que nous surveillons nous surveillaient — et avaient décidé de nous laisser croire que nous décidons quand un dossier est ouvert ?"</em><br><br>
+    Ce dossier souche a été modifié pour la dernière fois à une date que nos systèmes ne peuvent pas lire.<br><br>
+    L'auteur de cette note de clôture est le Bureau d'Archivage Permanent.<br><br>
+    <span style="color:var(--red)">Le Bureau d'Archivage Permanent n'a pas rédigé cette note.</span></p>
+    <p style="font-size:10px;color:var(--muted);margin-top:14px;letter-spacing:1px">FIN DU DOCUMENT SOUCHE C — LA REPRODUCTION EST PASSIBLE DE SANCTION-03 — <span class="redacted">███████████████████████████████████</span></p>
   </div>
 </div>
 
 <script>
-function showTab(id){
+function showTab(id,btn){
   document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>{t.classList.remove('active');t.setAttribute('aria-selected','false')});
   document.getElementById('tab-'+id).classList.add('active');
-  event.target.classList.add('active');
+  btn.classList.add('active');
+  btn.setAttribute('aria-selected','true');
+  document.getElementById('tab-'+id).scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 </script>
