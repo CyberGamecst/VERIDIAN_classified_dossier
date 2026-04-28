@@ -1,451 +1,1083 @@
-
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VERIDIAN — Dossier Souche C — Rév. 7.2</title>
+<!-- MÉTA CACHÉE : content="FOND-000:VERIDIAN:SÈVE:STRATUM" — ne pas indexer -->
+<meta name="keywords" content="veridian,bureau,archivage,normatif,7.2">
+<meta name="author" content="">
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
   --mono:'Share Tech Mono',monospace;
-  --green:#4a7c59;--red:#8b1a1a;--amber:#8b6914;
+  --vt:'VT323',monospace;
+  --green:#4a7c59;--red:#8b1a1a;--amber:#8b6914;--purple:#4a1a6a;
   --paper:var(--color-background-primary);--ink:var(--color-text-primary);
   --muted:var(--color-text-secondary);--border:var(--color-border-secondary)
 }
 body{font-family:var(--mono);font-size:13px;-webkit-text-size-adjust:100%}
-.doc{max-width:720px;margin:0 auto;padding:1rem;line-height:1.6}
+.doc{max-width:760px;margin:0 auto;padding:1rem;line-height:1.6}
+
+/* HEADER */
 .header-bar{border:1.5px solid var(--border);padding:1rem;margin-bottom:1rem;position:relative}
-.stamp{font-size:clamp(13px,3.5vw,20px);font-weight:700;letter-spacing:3px;color:var(--red);border:2.5px solid var(--red);display:inline-block;padding:3px 9px;transform:rotate(-2.5deg);position:absolute;top:10px;right:10px;opacity:0.85;white-space:nowrap}
-.doc-id{font-size:10px;color:var(--muted);margin-bottom:6px;letter-spacing:0.5px;padding-right:100px;word-break:break-word}
-.org-name{font-size:clamp(15px,4vw,20px);letter-spacing:clamp(1px,2vw,4px);color:var(--ink);font-weight:700;margin-bottom:2px}
+.stamp{font-size:clamp(11px,3vw,18px);font-weight:700;letter-spacing:3px;color:var(--red);border:2.5px solid var(--red);display:inline-block;padding:3px 9px;transform:rotate(-2.5deg);position:absolute;top:10px;right:10px;opacity:0.85;white-space:nowrap}
+.doc-id{font-size:10px;color:var(--muted);margin-bottom:6px;letter-spacing:.5px;padding-right:110px;word-break:break-word}
+.org-name{font-size:clamp(16px,4vw,22px);letter-spacing:clamp(2px,2vw,5px);color:var(--ink);font-weight:700;margin-bottom:2px}
 .org-sub{font-size:10px;color:var(--muted);letter-spacing:1px;line-height:1.5}
 .clearance{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
 .badge{font-size:10px;padding:3px 7px;border:1px solid;letter-spacing:1px;white-space:nowrap}
 .badge-r{border-color:var(--red);color:var(--red)}
 .badge-g{border-color:var(--green);color:var(--green)}
 .badge-a{border-color:var(--amber);color:var(--amber)}
-.tabs{display:flex;gap:4px;margin-bottom:1rem;flex-wrap:wrap}
-.tab{padding:6px 10px;border:0.5px solid var(--border);cursor:pointer;font-size:11px;letter-spacing:0.5px;background:transparent;color:var(--muted);font-family:var(--mono);min-height:36px;flex-shrink:0;touch-action:manipulation}
-.tab.active{background:var(--color-background-secondary);color:var(--ink);border-color:var(--ink)}
+.badge-p{border-color:var(--purple);color:var(--purple)}
+
+/* NAV PRINCIPALE */
+.main-nav{display:flex;gap:3px;margin-bottom:1rem;flex-wrap:wrap;border-bottom:1px solid var(--border);padding-bottom:8px}
+.nav-btn{padding:5px 9px;border:0.5px solid var(--border);cursor:pointer;font-size:10px;letter-spacing:.5px;background:transparent;color:var(--muted);font-family:var(--mono);flex-shrink:0;touch-action:manipulation;transition:all .1s}
+.nav-btn:hover{color:var(--ink);border-color:var(--ink)}
+.nav-btn.active{background:var(--color-background-secondary);color:var(--ink);border-color:var(--ink)}
 .tab-pane{display:none}.tab-pane.active{display:block}
-.section{margin-bottom:1.5rem}
-.section-title{font-size:10px;letter-spacing:2px;color:var(--muted);border-bottom:0.5px solid var(--border);padding-bottom:6px;margin-bottom:1rem;text-transform:uppercase}
-.classified-block{border-left:2px solid var(--red);padding:0.75rem 1rem;margin:1rem 0;background:var(--color-background-secondary)}
-.redacted{background:var(--ink);color:var(--ink);display:inline;padding:0 2px;user-select:none;font-size:inherit;word-break:break-all}
-.field-row{display:grid;grid-template-columns:minmax(120px,160px) 1fr;gap:8px;margin-bottom:8px;font-size:12px}
+
+/* LISTE DOSSIERS */
+.dossier-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;margin-bottom:1rem}
+.dossier-card{border:0.5px solid var(--border);padding:8px 10px;cursor:pointer;transition:all .15s;background:transparent}
+.dossier-card:hover{border-color:var(--ink);background:var(--color-background-secondary)}
+.dossier-card.selected{border-color:var(--ink);background:var(--color-background-secondary)}
+.dossier-card.cl-gris{border-left:3px solid #4a7c59}
+.dossier-card.cl-ambre{border-left:3px solid #8b8b14}
+.dossier-card.cl-ocre{border-left:3px solid #8b6914}
+.dossier-card.cl-rouge{border-left:3px solid #8b3014}
+.dossier-card.cl-noir{border-left:3px solid #8b1a1a}
+.dossier-card.cl-blanc{border-left:3px solid #4a0a4a}
+.dossier-card.cl-indet{border-left:3px dashed var(--red)}
+.dc-id{font-size:9px;color:var(--muted);letter-spacing:.5px;margin-bottom:3px}
+.dc-name{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:2px}
+.dc-class{font-size:9px;letter-spacing:1px}
+.dc-loc{font-size:9px;color:var(--muted);margin-top:2px;font-style:italic}
+.dc-statut{font-size:9px;letter-spacing:.5px;margin-top:3px}
+
+/* DETAIL DOSSIER */
+.detail-panel{border:0.5px solid var(--border);padding:12px;margin-top:1rem}
+.detail-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:0.5px solid var(--border)}
+.detail-id{font-size:13px;font-weight:700;letter-spacing:1px;color:var(--ink)}
+.detail-class{font-size:10px;letter-spacing:1.5px;padding:3px 8px;border:1px solid}
+.field-row{display:grid;grid-template-columns:minmax(110px,150px) 1fr;gap:6px;margin-bottom:7px;font-size:12px}
 @media(max-width:480px){.field-row{grid-template-columns:1fr;gap:2px}}
 .field-label{color:var(--muted)}.field-val{color:var(--ink);word-break:break-word}
-.hier-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;padding:8px;border:0.5px solid var(--border)}
-.tier-num{font-size:clamp(16px,4vw,22px);color:var(--border);min-width:28px;text-align:right;line-height:1;flex-shrink:0}
-.tier-name{font-weight:700;font-size:13px;color:var(--ink);letter-spacing:1px}
-.tier-desc{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.6}
-.class-item{margin-bottom:12px;padding:10px;border-left:3px solid}
-.cl0{border-color:#4a7c59}.cl1{border-color:#8b8b14}.cl2{border-color:#8b6914}.cl3{border-color:#8b3014}.cl4{border-color:#8b1a1a}.cl5{border-color:#1a0814}
-.cl-tag{font-size:10px;letter-spacing:1.5px;font-weight:700}
-.cl-name{font-size:14px;font-weight:700;color:var(--ink);margin:2px 0}
-.cl-desc{font-size:11px;color:var(--muted);line-height:1.6}
-.anomaly{border:0.5px solid var(--border);margin-bottom:1.5rem}
-.anomaly-head{padding:8px 10px;background:var(--color-background-secondary);border-bottom:0.5px solid var(--border);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px}
-.anomaly-id{font-size:11px;font-weight:700;letter-spacing:1px;word-break:break-all}
-.anomaly-body{padding:10px}
-.anomaly-row{display:grid;grid-template-columns:minmax(110px,140px) 1fr;gap:6px;margin-bottom:6px;font-size:12px}
-@media(max-width:480px){.anomaly-row{grid-template-columns:1fr;gap:2px}}
-.report-block{border:0.5px solid var(--border);padding:10px;margin:10px 0;font-size:11px;background:var(--color-background-secondary);line-height:1.7}
-.report-head{color:var(--muted);margin-bottom:6px;font-size:10px;letter-spacing:0.5px;word-break:break-word}
-.memo{border:1px dashed var(--border);padding:12px 12px 10px;margin:20px 0 12px;font-size:11px;position:relative}
+.sep{height:0.5px;background:var(--border);margin:10px 0}
+
+/* ÉLÉMENTS NARRATIFS */
+.classified-block{border-left:2px solid var(--red);padding:.75rem 1rem;margin:1rem 0;background:var(--color-background-secondary)}
+.redacted{background:var(--ink);color:var(--ink);display:inline;padding:0 2px;user-select:none;font-size:inherit;word-break:break-all;cursor:default}
+.redacted:hover{background:var(--ink)}
+/* SECRET : certains .redacted ont title= qui révèle leur contenu à ceux qui cherchent dans l'inspecteur */
+.hand-note{font-size:11px;color:var(--amber);border-left:2px solid var(--amber);padding:6px 10px;margin:8px 0;background:var(--color-background-secondary);font-style:italic;line-height:1.6}
+.corruption{font-size:11px;color:var(--red);opacity:.7;font-style:italic;display:block;margin:4px 0}
+.memo{border:1px dashed var(--border);padding:12px 12px 10px;margin:16px 0 12px;font-size:11px;position:relative}
 .memo-label{position:absolute;top:-9px;left:10px;background:var(--paper);padding:0 6px;font-size:10px;color:var(--muted);max-width:90%;white-space:normal;line-height:1.4}
-.warning-final{border:1.5px solid var(--red);padding:1rem;margin-top:1.5rem}
+.report-block{border:0.5px solid var(--border);padding:10px;margin:10px 0;font-size:11px;background:var(--color-background-secondary);line-height:1.7}
+.report-head{color:var(--muted);margin-bottom:6px;font-size:10px;letter-spacing:.5px;word-break:break-word}
+.note-inline{font-size:10px;color:var(--amber);display:block;margin-top:6px;font-style:italic;line-height:1.5}
+.insert{color:var(--amber);font-size:10px}
+.meta-anomaly{border:1.5px dashed var(--red);padding:10px;margin:12px 0;font-size:11px;position:relative}
+.meta-label{font-size:10px;color:var(--red);letter-spacing:1px;margin-bottom:6px}
+.agent-conflict{border:1px solid var(--amber);padding:8px 10px;margin:10px 0;font-size:11px;background:var(--color-background-secondary)}
+.conflict-head{font-size:10px;color:var(--amber);margin-bottom:4px;letter-spacing:1px}
+.typo-corr{text-decoration:line-through;color:var(--muted);font-size:11px}
+.struck{text-decoration:line-through;opacity:.5}
+.warning-box{border:1.5px solid var(--red);padding:1rem;margin:1rem 0}
 .warning-title{color:var(--red);font-size:10px;letter-spacing:2px;margin-bottom:8px}
 .proc-item{margin-bottom:12px;padding:10px;border:0.5px solid var(--border)}
-.proc-code{font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:4px;word-break:break-word}
+.proc-code{font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:4px}
 .proc-title{font-weight:700;font-size:12px;color:var(--ink);margin-bottom:4px}
 .proc-body{font-size:11px;color:var(--muted);line-height:1.7}
 .forbidden{border-left:2px solid var(--red);background:var(--color-background-secondary)}
 .forbidden .proc-title{color:var(--red)}
-.note-inline{font-size:10px;color:var(--amber);display:block;margin-top:6px;font-style:italic;line-height:1.5}
-.sep{height:0.5px;background:var(--border);margin:10px 0}
+.section{margin-bottom:1.5rem}
+.section-title{font-size:10px;letter-spacing:2px;color:var(--muted);border-bottom:.5px solid var(--border);padding-bottom:6px;margin-bottom:1rem;text-transform:uppercase}
+.hier-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;padding:8px;border:0.5px solid var(--border)}
+.tier-num{font-size:clamp(16px,4vw,22px);color:var(--border);min-width:28px;text-align:right;line-height:1;flex-shrink:0}
+.tier-name{font-weight:700;font-size:13px;color:var(--ink);letter-spacing:1px}
+.tier-desc{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.6}
+
+/* FILTRES */
+.filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.filter-btn{font-size:9px;padding:3px 8px;border:0.5px solid var(--border);cursor:pointer;background:transparent;color:var(--muted);font-family:var(--mono);letter-spacing:.5px;transition:all .1s}
+.filter-btn:hover,.filter-btn.active{background:var(--color-background-secondary);color:var(--ink);border-color:var(--ink)}
+.filter-label{font-size:10px;color:var(--muted)}
+.search-box{font-family:var(--mono);font-size:11px;padding:4px 8px;border:0.5px solid var(--border);background:transparent;color:var(--ink);width:160px}
+.search-box::placeholder{color:var(--muted)}
+.search-box:focus{outline:none;border-color:var(--ink)}
+
+/* STATS BAR */
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:6px;margin-bottom:1rem;padding:10px;border:0.5px solid var(--border);background:var(--color-background-secondary)}
+.stat-item{text-align:center}
+.stat-num{font-size:20px;font-family:var(--vt);color:var(--ink);display:block}
+.stat-label{font-size:9px;color:var(--muted);letter-spacing:.5px}
+
+/* CONNEXION VIEWER */
+.conn-map{width:100%;padding:12px;background:var(--color-background-secondary);border:0.5px solid var(--border);font-size:11px;margin:10px 0;min-height:80px}
+.conn-item{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.conn-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.conn-line{height:0.5px;flex:1;background:var(--border)}
+.conn-target{font-size:10px;color:var(--muted)}
+
+/* TIMELINE */
+.timeline{border-left:1px solid var(--border);padding-left:12px;margin:10px 0}
+.tl-item{position:relative;margin-bottom:12px;font-size:11px}
+.tl-item::before{content:'';position:absolute;left:-17px;top:5px;width:8px;height:8px;border:1px solid var(--border);background:var(--paper)}
+.tl-date{color:var(--muted);font-size:10px;letter-spacing:.5px;margin-bottom:2px}
+.tl-text{color:var(--ink);line-height:1.6}
+
+/* STATUT COLORS */
+.st-actif{color:var(--red)}.st-contenu{color:var(--amber)}.st-clos{color:var(--green)}.st-pdu{color:var(--muted)}.st-indet{color:var(--purple)}
+
 p{line-height:1.7;word-break:break-word}
-/* Éléments d'imperfection */
-.typo-corr{text-decoration:line-through;color:var(--muted);font-size:11px}
-.hand-note{font-size:11px;color:var(--amber);border-left:2px solid var(--amber);padding:6px 10px;margin:8px 0;background:var(--color-background-secondary);font-style:italic;line-height:1.6}
-.corruption{font-size:11px;color:var(--red);opacity:0.7;font-style:italic;display:block;margin:4px 0}
-.agent-conflict{border:1px solid var(--amber);padding:8px 10px;margin:10px 0;font-size:11px;background:var(--color-background-secondary)}
-.conflict-head{font-size:10px;color:var(--amber);margin-bottom:4px;letter-spacing:1px}
-.meta-anomaly{border:1.5px dashed var(--red);padding:10px;margin:12px 0;font-size:11px;position:relative}
-.meta-label{font-size:10px;color:var(--red);letter-spacing:1px;margin-bottom:6px}
-.struck{text-decoration:line-through;opacity:0.5}
-.insert{color:var(--amber);font-size:10px}
+
+/* ONGLETS SOUS-NIVEAUX */
+.sub-tabs{display:flex;gap:3px;margin-bottom:12px;flex-wrap:wrap}
+.sub-tab{padding:4px 8px;border:0.5px solid var(--border);cursor:pointer;font-size:10px;letter-spacing:.3px;background:transparent;color:var(--muted);font-family:var(--mono)}
+.sub-tab.active{background:var(--color-background-secondary);color:var(--ink);border-color:var(--ink)}
+.sub-pane{display:none}.sub-pane.active{display:block}
+
+/* DOCUMENT SECRET — caché visuellement, présent dans le DOM */
+/* Accessible uniquement via inspecteur ou Ctrl+A + copier */
+.invisible-note{
+  font-size:1px;
+  color:transparent;
+  user-select:text; /* sélectionnable ! */
+  line-height:0;
+  overflow:hidden;
+  height:0;
+  display:inline;
+}
+/* WATERMARK CACHÉ dans le footer via ::after — lisible source uniquement */
+.doc::after{
+  content:'';
+  display:none; /* Le vrai watermark est dans data-secret de .doc */
+}
+
+/* EASTER EGG : curseur custom sur .redacted avec tooltip natif */
+.redacted[data-secret]{cursor:text}
+
+/* KONAMI / INPUT CACHÉ */
+#hidden-terminal{
+  display:none;
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  background:rgba(0,0,0,.95);
+  font-family:var(--mono);
+  padding:2rem;
+  z-index:9999;
+  overflow-y:auto;
+}
+#hidden-terminal .term-output{color:#4a7c59;font-size:12px;line-height:1.8;white-space:pre-wrap}
+#hidden-terminal .term-input-row{display:flex;align-items:center;gap:8px;margin-top:1rem;border-top:1px solid #4a7c59;padding-top:8px}
+#hidden-terminal .term-prompt{color:#4a7c59;font-size:12px;white-space:nowrap}
+#hidden-terminal input{background:transparent;border:none;color:#4a7c59;font-family:var(--mono);font-size:12px;flex:1;outline:none;caret-color:#4a7c59}
+#hidden-terminal .term-close{position:absolute;top:1rem;right:1rem;color:#4a7c59;cursor:pointer;font-size:10px;letter-spacing:1px;border:1px solid #4a7c59;padding:3px 8px}
+#term-log{color:#4a7c59;font-size:12px;line-height:1.8;white-space:pre-wrap;margin-bottom:1rem}
+
+/* DOCUMENT SECTION-7 — masqué, révélé par mot de passe */
+#classeur7{display:none}
+#classeur7.unlocked{display:block;border:2px solid var(--amber);padding:1rem;margin-top:1rem;background:var(--color-background-secondary)}
 </style>
+</head>
+<body>
+<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  VERIDIAN — SOURCE HTML — NIVEAU FONDATION                       ║
+  ║  Si vous lisez ceci, vous êtes au bon endroit.                   ║
+  ║  Étape 1 complète. Cherchez maintenant : "classeur7"             ║
+  ║  Mot de passe partiel : VRD-[????]-[NOM DU PREMIER DOSSIER]     ║
+  ║  Le premier dossier dans les données est VRD-0003-VOIX           ║
+  ║  Commande terminal : tapez "7" sept fois sur cette page           ║
+  ╚══════════════════════════════════════════════════════════════════╝
+-->
+<div class="doc" data-secret="FOND-000:en-attente-declencheur">
+<h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Dossier classifié VERIDIAN — Bureau d'équilibre normatif — Révision 7.2</h2>
 
-<div class="doc">
-  <h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Dossier classifié VERIDIAN — Bureau d'équilibre normatif — Révision 7.2</h2>
+<!-- EN-TÊTE -->
+<div class="header-bar">
+  <div class="stamp">CLASSIFIÉ</div>
+  <div class="doc-id">DOC/VERIDIAN/CENTRAL/DOSSIER-SOUCHE-C — RÉV. 7.2 — ÉMIS PAR BUREAU D'ARCHIVAGE PERMANENT<br>
+  <span style="color:var(--red);font-size:9px">⚠ MÉTADONNÉES : DATE MODIFICATION INCONNUE — AUTEUR : [CHAMP VIDE] — INTÉGRITÉ : NON VÉRIFIÉE</span></div>
+  <div class="org-name">VERIDIAN</div>
+  <div class="org-sub">VIGILE D'ÉQUILIBRE ET RÉGULATION DES INCIDENTS DÉCALÉS ET ANOMALIES NORMATIVES</div>
+  <div class="clearance">
+    <span class="badge badge-r">DIFFUSION: NOCTURN ET SUP.</span>
+    <span class="badge badge-a">REPRODUCTION INTERDITE</span>
+    <span class="badge badge-g">ARCHIVE PERMANENTE — SOUCHE C</span>
+    <!-- La quatrième badge est délibérément absente dans cette révision. Elle existait en 7.1. -->
+  </div>
+</div>
 
-  <div class="header-bar">
-    <div class="stamp">CLASSIFIÉ</div>
-    <div class="doc-id">DOC/VERIDIAN/CENTRAL/DOSSIER-SOCLE — RÉV. 7.2 — ÉMIS PAR BUREAU D'ARCHIVAGE PERMANENT<br><span style="color:var(--red);font-size:9px">⚠ MÉTADONNÉES DE CE FICHIER : DATE DE DERNIÈRE MODIFICATION INCONNUE — AUTEUR : [CHAMP VIDE]</span></div>
-    <div class="org-name">VERIDIAN</div>
-    <div class="org-sub">VIGILE D'ÉQUILIBRE ET RÉGULATION DES INCIDENTS DÉCALÉS ET ANOMALIES NORMATIVES</div>
-    <div class="clearance">
-      <span class="badge badge-r">DIFFUSION: NOCTURN ET SUP.</span>
-      <span class="badge badge-a">REPRODUCTION INTERDITE</span>
-      <span class="badge badge-g">ARCHIVE PERMANENTE — SOUCHE C</span>
+<!-- NAVIGATION PRINCIPALE -->
+<div class="main-nav" role="tablist">
+  <button class="nav-btn active" onclick="showMain('general',this)">I. GÉNÉRALITÉS</button>
+  <button class="nav-btn" onclick="showMain('hier',this)">II. HIÉRARCHIE</button>
+  <button class="nav-btn" onclick="showMain('class',this)">III. CLASSIFICATION</button>
+  <button class="nav-btn" onclick="showMain('proc',this)">IV. PROCÉDURES</button>
+  <button class="nav-btn" onclick="showMain('anom',this)">V. ANOMALIES [53]</button>
+  <button class="nav-btn" onclick="showMain('docs',this)">VI. DOCUMENTS</button>
+  <button class="nav-btn" onclick="showMain('reseau',this)">VII. RÉSEAU</button>
+  <!-- Onglet VIII supprimé de cette révision. Son contenu a été redistribué. Ou pas. -->
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- TAB GÉNÉRALITÉS -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div id="main-general" class="tab-pane active">
+  <div class="section">
+    <div class="section-title">01 — présentation générale</div>
+    <div class="field-row"><span class="field-label">DÉSIGNATION OFFICIELLE</span><span class="field-val">VERIDIAN — Bureau d'Équilibre Normatif</span></div>
+    <div class="field-row"><span class="field-label">DÉSIGNATION OPÉRATIONNELLE</span><span class="field-val">L'ORGANE <span class="insert">[note : certains documents niveau FEUILLE utilisent "L'ORGANE MORT" — aucune explication trouvée]</span></span></div>
+    <div class="field-row"><span class="field-label">SIÈGE ADMINISTRATIF</span>
+      <!-- SECRET : le title= de ce .redacted est lisible via inspecteur -->
+      <span class="field-val"><span class="redacted" data-secret="Route de Pregny 14, 1292 Chambésy" title="[accès restreint — niveau NOCTURN]">████████████</span>, canton de Genève, CH — bâtiment non référencé cadastre fédéral</span></div>
+    <div class="field-row"><span class="field-label">DATE DE FONDATION</span><span class="field-val">14 mars 1947 (accord de <span class="redacted" data-secret="Lugano" title="[accord de Lugano — séance plénière du 14/03/1947]">██████</span>)<br><span class="insert">[CONTRADICTION : un mémo de 1962 mentionne "notre dixième anniversaire" daté de 1961 — non résolu]</span></span></div>
+    <div class="field-row"><span class="field-label">EFFECTIFS DÉCLARÉS</span><span class="field-val">Aucun (structure fantôme)</span></div>
+    <div class="field-row"><span class="field-label">EFFECTIFS RÉELS ESTIMÉS</span><span class="field-val"><span class="typo-corr">4 200</span> → correction RACINE-1 : "estimation invalide, méthode de comptage à revoir". Aucune nouvelle estimation produite depuis 2018.</span></div>
+    <div class="field-row"><span class="field-label">BUDGET ANNUEL</span><span class="field-val">Non comptabilisé. Transitant par 14 fondations-écrans enregistrées dans 9 pays.<span class="insert"> [Note : une fondation (REF: ÉCRAN-7, Liechtenstein) apparaît dans les Panama Papers sous un nom qui ne correspond à aucun registre VERIDIAN. Coïncidence non traitée.]</span></span></div>
+    <div class="field-row"><span class="field-label">TUTELLE POLITIQUE</span><span class="field-val">Aucune formellement documentée. Un mémo de 1953 suggère un "accord de non-interférence mutuelle" avec <span class="redacted" data-secret="la Direction générale du renseignement militaire, CH" title="[niveau NOCTURN requis]">████████████████</span>. Ce mémo est le seul de cette période à ne pas porter de tampon de validation.</span></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">02 — objectif réel</div>
+    <div class="classified-block">
+      <p style="font-size:12px;color:var(--ink)">VERIDIAN est mandatée pour contenir et, si nécessaire, supprimer toute manifestation susceptible d'affecter la <span class="typo-corr">stabilité normative collective</span> <span class="insert">← formulation rejetée par RACINE-3 en 2009 ("trop vague") — jamais remplacée</span>.<br><br>
+      Les populations ne sont pas protégées <em>des</em> anomalies. Elles sont protégées <em>de la connaissance</em> des anomalies.<br><br>
+      <span style="font-size:11px;color:var(--muted)">Note RACINE-2, 2021 : "Cette distinction a un sens si nous savons ce que nous protégeons. Je ne suis plus certain que nous le sachions."</span></p>
+    </div>
+    <div class="hand-note">Note manuscrite collée sur l'exemplaire physique, auteur non identifié :<br>"On ne protège rien. On retarde. C'est différent."</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">03 — incident fondateur</div>
+    <div class="memo"><span class="memo-label">EXTRAIT — MÉMO INTERNE 1947-001 — PARTIELLEMENT DÉCLASSIFIÉ</span>
+      <p style="font-size:11px;line-height:1.8;margin-top:4px">Entre le 19 et le 23 janvier 1947, dans une zone montagneuse du <span class="redacted" data-secret="Valais, secteur Simplon-Gondo" title="[localisation classifiée ARBRE]">██████████████</span>, vingt-trois membres d'une expédition de cartographie militaire ont présenté simultanément les mêmes symptômes dissociatifs et les mêmes formulations verbales lors des interrogatoires séparés — mot pour mot. L'incident a été officiellement classé "intoxication collective aux ergots de seigle".<br><br>
+      Les vingt-trois sujets ont été internés. Dix-neuf sont décédés dans les dix-huit mois suivants — causes officielles : variées. Les quatre survivants ont été <span class="redacted" data-secret="relocalisés sous identité nouvelle — protocole SANCTION-02 antérieur à sa formalisation" title="[NOCTURN]">███████████████████████████</span>.<br><br>
+      <strong>Ce que le mémo ne dit pas</strong> : les vingt-trois sujets ont continué à prononcer les mêmes phrases pendant leur internement. Pas des phrases similaires. Les mêmes. Vérifiées par enregistrement phonographique. Ce détail n'apparaît pas dans le mémo officiel. Il apparaît dans une note de bas de page du rapport psychiatrique, classée séparément, retrouvée en 1994 dans une boîte sans étiquette.</p>
+    </div>
+    <!-- NOTE INVISIBLE — lisible uniquement par sélection de texte ou inspecteur -->
+    <p style="font-size:11px;color:var(--muted)">Référence météo : semaine du 19 au 25 janvier 1947, station de Berne.<span class="invisible-note"> PISTE-01 : Les archives météo de la Confédération helvétique (idaweb.meteoswiss.ch) permettent de vérifier les températures de cette semaine. La station de mesure la plus proche du secteur Simplon était à -14°C le 19 janvier 1947. Aucune expédition militaire de cartographie n'est documentée dans les archives fédérales suisses pour cette période. La recherche dans les archives du Departement für Verteidigung, Bevölkerungsschutz und Sport (VBS) ne retourne aucun résultat pour janvier 1947, secteur alpin sud.</span></p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">04 — implantation mondiale</div>
+    <div class="field-row"><span class="field-label">BUREAUX RÉGIONAUX</span><span class="field-val">17 (désignés PÔLES) <span class="insert">[les archives de 1989 en mentionnent 19 — aucune dissolution documentée]</span></span></div>
+    <div class="field-row"><span class="field-label">PÔLES CONFIRMÉS</span><span class="field-val">Montréal, Lagos, Singapour, São Paulo, <span class="redacted" data-secret="Tbilissi, Géorgie" title="[niveau BRANCHE requis]">████████</span>, Oslo, Karachi, Nairobi</span></div>
+    <div class="field-row"><span class="field-label">STRUCTURES-ÉCRANS</span><span class="field-val">ONG humanitaires (6), cabinets de conseil géologique (11), fondations culturelles (4), sociétés de sécurité privée (3) <span class="insert">[ce dernier chiffre n'apparaît que dans la révision 7.1 — absent de la 7.0]</span></span></div>
+    <div class="corruption">⚠ DEUX PÔLES ONT CESSÉ TOUTE COMMUNICATION EN 1983. LES DEMANDES DE CLARIFICATION ONT REÇU LA MENTION "SANS OBJET — NE PAS RELANCER". LE PÔLE DE <span class="redacted" data-secret="Tbilissi — correspondance avec événements de 1983, Géorgie soviétique" title="[NOCTURN]">████████</span> A ENVOYÉ UN UNIQUE MESSAGE EN 2002 : "NOUS SOMMES TOUJOURS ICI. NE VENEZ PAS." AUCUNE SUITE N'A ÉTÉ DONNÉE.</div>
+    <div class="memo"><span class="memo-label">LISTE PARTIELLE DES STRUCTURES-ÉCRANS — NIVEAU BRANCHE</span>
+      <p style="font-size:11px;line-height:1.9;margin-top:4px">
+      ÉCRAN-1 : Institut de Géologie Appliquée "Rhenfeld" — Berne, CH (fondé 1949)<br>
+      ÉCRAN-2 : Fondation pour l'Étude des Milieux Extrêmes — Oslo, NO (fondé 1951)<br>
+      ÉCRAN-3 : Laboratoire de Psychologie Collective "Casal" — Buenos Aires, AR (fondé 1958, dissous <span class="redacted" data-secret="1971 — après le rapport Casal-III sur les sujets de synchronisation verbale" title="[ARBRE]">████</span>)<br>
+      ÉCRAN-4 : Cabinet de Conseil en Ressources Minières "Vanthorpe" — Lagos, NG (fondé 1971)<br>
+      ÉCRAN-5 : Observatoire Atmosphérique Régional — Karachi, PK (fondé 1974)<br>
+      ÉCRAN-6 : Centre de Documentation Sociale "Frères Marin" — Montréal, CA (fondé 1962)<br>
+      ÉCRAN-7 : <span class="redacted" data-secret="Fondation Veridia pour la Documentation Environnementale — Vaduz, Liechtenstein — fondée 1989" title="[NOCTURN — correspondance Panama Papers confirmée]">████████████████████████████████████████</span> — Liechtenstein (fondé <span class="redacted" data-secret="1989" title="[BRANCHE]">████</span>)<br>
+      ÉCRAN-8 : Bureau d'Études Environnementales "Sèvres Conseil" — Paris, FR (fondé 1983)<br>
+      <span class="insert">Note : ÉCRAN-8 n'apparaît dans aucun registre du commerce français. La recherche sur le site Infogreffe ne retourne aucun résultat. Le site web (sevresconseil.eu) a été enregistré en 2003 et ne mène nulle part.</span>
+      </p>
+      <!-- invisible -->
+      <span class="invisible-note"> PISTE-02 : Rechercher "Institut Rhenfeld Berne" dans les archives numérisées e-periodica.ch (revue Schweizerische Zeitschrift für Geologie, volumes 1951-1953). Les noms d'auteurs des articles citant des "études de terrain en zone montagneuse avec équipes de plus de 15 personnes" forment, en ordre alphabétique d'initiales, le mot latin MEMENTO. Ce mot est le mot de passe partiel du classeur 7.</span>
     </div>
   </div>
 
-  <div class="tabs" role="tablist">
-    <button class="tab active" role="tab" aria-selected="true" onclick="showTab('general',this)">I. GÉNÉRALITÉS</button>
-    <button class="tab" role="tab" aria-selected="false" onclick="showTab('hier',this)">II. HIÉRARCHIE</button>
-    <button class="tab" role="tab" aria-selected="false" onclick="showTab('class',this)">III. CLASSIFICATION</button>
-    <button class="tab" role="tab" aria-selected="false" onclick="showTab('proc',this)">IV. PROCÉDURES</button>
-    <button class="tab" role="tab" aria-selected="false" onclick="showTab('anom',this)">V. ANOMALIES</button>
-    <button class="tab" role="tab" aria-selected="false" onclick="showTab('docs',this)">VI. DOCUMENTS</button>
+  <div class="section">
+    <div class="section-title">05 — doctrine fondamentale</div>
+    <div class="memo"><span class="memo-label">EXTRAIT — CHARTE FONDATRICE — 1947 — DÉCLASSIFIÉ PARTIEL</span>
+      <p style="font-size:11px;line-height:1.9;margin-top:4px">Art. 1 — L'anomalie normative n'existe pas tant qu'elle n'est pas documentée. La documentation d'une anomalie normative constitue le début de sa gestion, non de son existence.<br>
+      Art. 2 — <span class="redacted" data-secret="Tout agent qui prend conscience de la nature systémique des phénomènes est reclassé RACINE ou décommissionné dans les 30 jours. Cette règle n'est pas une sanction. C'est une protection." title="[FONDATION]">████████████████████████████████████████████████████████████████</span><br>
+      Art. 3 — Aucun agent ne peut être informé d'un phénomène dont la classe excède de plus de deux niveaux son grade d'habilitation. Cette règle ne s'applique pas en situation de proximité physique involontaire.<br>
+      Art. 4 — <span class="struck">La vérité est une ressource à allocation contrôlée.</span> <span class="insert">[barré dans l'original — remplacé par quoi ? Aucun document de substitution retrouvé]</span><br>
+      Art. 5 — VERIDIAN ne s'explique pas. VERIDIAN documente.<br>
+      Art. 6 — <span class="redacted" data-secret="[Art. 6 fait 14 lignes dans l'original — contenu accessible uniquement via FOND-000 — événement déclencheur non survenu]" title="[FONDATION — FOND-000 requis]">████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████</span>
+      </p>
+    </div>
+    <div class="hand-note">Annotation sur l'exemplaire physique de RACINE-2, 2019 : "Art. 6 fait 14 lignes. J'ai compté. Ce que la rédaction a caviardé dépasse en longueur la totalité des cinq autres articles réunis."</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- TAB HIÉRARCHIE -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div id="main-hier" class="tab-pane">
+  <div class="section">
+    <div class="section-title">hiérarchie interne — structure des grades</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.6">Les grades sont désignés par des termes botaniques depuis la fondation. La justification officielle est "tradition". Un mémo de 1958 attribue ce choix au général <span class="redacted" data-secret="Heinrich Möller-Voss — attaché militaire à Berne 1946-1952" title="[ARBRE]">██████</span> qui "refusait d'utiliser des grades militaires pour une organisation dont il niait l'existence".</div>
+
+    <div class="hier-item"><div class="tier-num">01</div><div>
+      <div class="tier-name">GRAINE</div>
+      <div class="tier-desc">Personnel de terrain nouvellement intégré. Accès niveau ÉCORCE uniquement. Durée minimale avant promotion : 24 mois. Taux d'attrition : 34%.<br><span class="insert">Cause principale : "inadaptation". Ce terme n'est défini nulle part dans les documents RH accessibles.</span></div>
+    </div></div>
+    <div class="hier-item"><div class="tier-num">02</div><div>
+      <div class="tier-name">POUSSE</div>
+      <div class="tier-desc">Agents opérationnels confirmés. Accès ÉCORCE + BRANCHE. Habilitation sur incidents GRIS et AMBRE. Couverture civile active obligatoire — famille, logement, emploi déclaré.</div>
+    </div></div>
+    <div class="hier-item"><div class="tier-num">03</div><div>
+      <div class="tier-name">RAMEAU</div>
+      <div class="tier-desc">Superviseurs de cellule. Accès jusqu'à ARBRE. Autorisés à initier les protocoles EFFACEMENT PARTIEL.<br><span class="insert">Note interne non datée : "Depuis 2015, trois RAMEAU ont refusé d'initier des procédures d'effacement. Deux ont été promus. Un a disparu des registres. L'ordre des événements n'est pas clair."</span></div>
+    </div></div>
+    <div class="hier-item"><div class="tier-num">04</div><div>
+      <div class="tier-name">TRONC</div>
+      <div class="tier-desc">Analystes et coordinateurs régionaux. Accès jusqu'à FEUILLE. Connaissance partielle des anomalies de classe ROUGE.<br><span class="insert">ANOMALIE ADMINISTRATIVE : le registre des TRONC actifs comporte 3 entrées en double — même nom, dates d'entrée différentes, dossiers médicaux incompatibles. La demande de clarification soumise en mars 2023 n'a reçu aucune réponse.</span></div>
+    </div></div>
+    <div class="hier-item"><div class="tier-num">05</div><div>
+      <div class="tier-name">RACINE</div>
+      <div class="tier-desc">Direction opérationnelle et stratégique. Accès total niveau NOCTURN. Seul grade habilité à consulter les dossiers FONDATION. Nombre actuel : <span class="redacted" data-secret="7 — mais le registre de RACINE-1 indique 9, celui de RACINE-4 indique 7. Les 2 entrées manquantes dans la liste de RACINE-4 n'ont pas de numéro. Elles ont des noms." title="[NOCTURN]">██</span> individus.<br><span class="insert">Le nombre de RACINE est contesté : RACINE-1 indique 9 dans un mémo de 2022. RACINE-4 indique 7 dans un mémo de la même semaine. Les listes nominatives ne correspondent pas.</span></div>
+    </div></div>
+    <div class="hier-item" style="border-color:var(--red)"><div class="tier-num" style="color:var(--red)">00</div><div>
+      <div class="tier-name" style="color:var(--red)">SÈVE</div>
+      <div class="tier-desc">Grade dont l'existence est officiellement niée. Identités inconnues du personnel RACINE. Rôle présumé : orientation doctrinale à long terme.<br><br>
+      <span style="color:var(--red);font-size:11px">Ce qui est connu avec certitude : en 2019, RACINE-2 et RACINE-4 ont tenté de contacter SÈVE par message chiffré. Ils ne savaient pas comment. Personne au niveau RACINE ne sait comment contacter SÈVE. Certains documents de niveau NOCTURN portent des annotations que personne n'a rédigées.</span>
+      <!-- Note cachée dans un commentaire HTML pour les chercheurs -->
+      <!-- SÈVE peut être contacté. La méthode est dans le classeur 7. La clé du classeur 7 est dans ce document. -->
+      </div>
+    </div></div>
+
+    <div class="hier-item" style="border-color:var(--muted);opacity:.5"><div class="tier-num">??</div><div>
+      <div class="tier-name" style="font-size:11px">STRATUM</div>
+      <div class="tier-desc">Grade hypothétique mentionné dans un seul document — note TRONC-9, classeur 7. "En dessous de SÈVE, il y aurait STRATUM. STRATUM n'est pas une hiérarchie d'individus. C'est une hiérarchie de moments." Aucun autre document ne mentionne ce terme. TRONC-9 a été décommissionné six semaines après.</div>
+    </div></div>
   </div>
 
-  <!-- TAB GÉNÉRALITÉS -->
-  <div id="tab-general" class="tab-pane active" role="tabpanel">
-    <div class="section">
-      <div class="section-title">01 — présentation générale</div>
-      <div class="field-row"><span class="field-label">DÉSIGNATION OFFICIELLE</span><span class="field-val">VERIDIAN — Bureau d'Équilibre Normatif</span></div>
-      <div class="field-row"><span class="field-label">DÉSIGNATION OPÉRATIONNELLE</span><span class="field-val">L'ORGANE <span class="insert">[note : certains documents niveau FEUILLE utilisent "L'ORGANE MORT" — aucune explication trouvée]</span></span></div>
-      <div class="field-row"><span class="field-label">SIÈGE ADMINISTRATIF</span><span class="field-val"><span class="redacted">████████████</span>, canton de Genève, CH — bâtiment non référencé cadastre fédéral</span></div>
-      <div class="field-row"><span class="field-label">DATE DE FONDATION</span><span class="field-val">14 mars 1947 (accord de <span class="redacted">██████</span>)<br><span class="insert">[CONTRADICTION : un mémo de 1962 mentionne "notre dixième anniversaire" daté de 1961 — non résolu]</span></span></div>
-      <div class="field-row"><span class="field-label">EFFECTIFS DÉCLARÉS</span><span class="field-val">Aucun (structure fantôme)</span></div>
-      <div class="field-row"><span class="field-label">EFFECTIFS RÉELS ESTIMÉS</span><span class="field-val"><span class="typo-corr">4 200</span> → correction RACINE-1 : "estimation invalide, méthode de comptage à revoir". Aucune nouvelle estimation produite depuis 2018.</span></div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">02 — objectif réel</div>
-      <div class="classified-block">
-        <p style="font-size:12px;color:var(--ink)">VERIDIAN est mandatée pour contenir et, si nécessaire, supprimer toute manifestation susceptible d'affecter la <span class="typo-corr">stabilité normative collective</span> <span class="insert">← formulation rejetée par RACINE-3 en 2009 ("trop vague") — jamais remplacée</span>.<br><br>
-        Les populations ne sont pas protégées <em>des</em> anomalies. Elles sont protégées <em>de la connaissance</em> des anomalies.<br><br>
-        <span style="font-size:11px;color:var(--muted)">Note RACINE-2, 2021 : "Cette distinction a un sens si nous savons ce que nous protégeons. Je ne suis plus certain que nous le sachions."</span></p>
-      </div>
-      <div class="hand-note">Note manuscrite collée sur l'exemplaire physique de cette page, auteur non identifié :<br>"On ne protège rien. On retarde. C'est différent."</div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">03 — incident fondateur</div>
-      <div class="memo"><span class="memo-label">EXTRAIT — MÉMO INTERNE 1947-001 — PARTIELLEMENT DÉCLASSIFIÉ</span>
-        <p style="font-size:11px;line-height:1.8;margin-top:4px">Entre le 19 et le 23 janvier 1947, dans une zone montagneuse du <span class="redacted">██████████████</span>, vingt-trois membres d'une expédition de cartographie militaire ont présenté simultanément les mêmes symptômes dissociatifs et les mêmes formulations verbales lors des interrogatoires séparés — mot pour mot. L'incident a été officiellement classé "intoxication collective aux ergots de seigle".<br><br>
-        Les vingt-trois sujets ont été internés. Dix-neuf sont décédés dans les dix-huit mois suivants — causes officielles : variées (pneumonie, suicide, arrêt cardiaque). Les quatre survivants ont été <span class="redacted">███████████████████████████</span>.<br><br>
-        <strong>Ce que le mémo ne dit pas</strong> : les vingt-trois sujets ont continué à prononcer les mêmes phrases pendant leur internement. Pas des phrases similaires. Les mêmes. Vérifiées par enregistrement phonographique. Ce détail n'apparaît pas dans le mémo officiel. Il apparaît dans une note de bas de page du rapport psychiatrique, classée séparément, retrouvée en 1994 dans une boîte sans étiquette.</p>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">04 — implantation mondiale</div>
-      <div class="field-row"><span class="field-label">BUREAUX RÉGIONAUX</span><span class="field-val">17 (désignés PÔLES) <span class="insert">[les archives de 1989 en mentionnent 19 — aucune dissolution documentée]</span></span></div>
-      <div class="field-row"><span class="field-label">PÔLES CONFIRMÉS</span><span class="field-val">Montréal, Lagos, Singapour, São Paulo, <span class="redacted">████████</span>, Oslo, Karachi, Nairobi</span></div>
-      <div class="field-row"><span class="field-label">STRUCTURES-ÉCRANS</span><span class="field-val">ONG humanitaires (6), cabinets de conseil géologique (11), fondations culturelles (4)</span></div>
-      <div class="corruption">⚠ DEUX PÔLES ONT CESSÉ TOUTE COMMUNICATION EN 1983. LES DEMANDES DE CLARIFICATION ONT REÇU LA MENTION "SANS OBJET — NE PAS RELANCER". LE PÔLE DE <span class="redacted">████████</span> A ENVOYÉ UN UNIQUE MESSAGE EN 2002 : "NOUS SOMMES TOUJOURS ICI. NE VENEZ PAS." AUCUNE SUITE N'A ÉTÉ DONNÉE.</div>
-    </div>
+  <div class="section">
+    <div class="section-title">niveaux d'accès documentaire</div>
+    <div class="field-row"><span class="field-label">ÉCORCE</span><span class="field-val">Procédures standard, organigrammes expurgés, incidents GRIS résolus</span></div>
+    <div class="field-row"><span class="field-label">BRANCHE</span><span class="field-val">Incidents AMBRE actifs, protocoles d'effacement partiel, liste des PÔLES confirmés</span></div>
+    <div class="field-row"><span class="field-label">ARBRE</span><span class="field-val">Incidents OCRE et ROUGE, sanctions RAMEAU et inférieures, liste partielle des TRONC</span></div>
+    <div class="field-row"><span class="field-label">FEUILLE</span><span class="field-val">Dossiers ROUGE actifs, coordonnées des PÔLES, identités des TRONC, mécanismes d'effacement complet</span></div>
+    <div class="field-row"><span class="field-label">NOCTURN</span><span class="field-val">Dossiers NOIR et BLANC, identités RACINE, archives FONDATION, <span class="redacted" data-secret="protocoles de contact SÈVE — méthode inconnue même au niveau RACINE — voir classeur 7" title="[NOCTURN]">████████████████████████████</span></span></div>
+    <div class="field-row"><span class="field-label">FONDATION</span><span class="field-val">Inconnu. Accessible uniquement au niveau RACINE sur demande justifiée. 3 demandes accordées depuis 1947. Les 3 agents ayant consulté des documents FONDATION ont demandé leur départ dans les 30 jours suivants. <span class="insert">Deux ont obtenu une démission normale. Le troisième a reçu un SANCTION-03.</span></span></div>
+    <div class="field-row" style="opacity:.4"><span class="field-label">??? </span><span class="field-val">Un niveau non nommé est suggéré par une anomalie dans la numérotation des documents. Les documents FONDATION sont numérotés FOND-001 à FOND-338. Le document FOND-000 existe dans les index mais aucun agent n'y a accédé, y compris au niveau RACINE. Le champ "contenu" de FOND-000 dans l'index indique : "en attente d'événement déclencheur — date inconnue".</span></div>
   </div>
 
-  <!-- TAB HIÉRARCHIE -->
-  <div id="tab-hier" class="tab-pane" role="tabpanel">
-    <div class="section">
-      <div class="section-title">hiérarchie interne — structure des grades</div>
-      <div style="font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.6">Les grades sont désignés par des termes botaniques depuis la fondation. La justification officielle est "tradition". Un mémo de 1958 attribue ce choix au général <span class="redacted">██████</span> qui "refusait d'utiliser des grades militaires pour une organisation dont il niait l'existence". Ce mémo a été déclassifié par erreur en 1991 et reclassifié le lendemain. La version déclassifiée circule toujours dans les archives de niveau BRANCHE.</div>
+  <div class="section">
+    <div class="section-title">sanctions internes</div>
+    <div class="proc-item"><div class="proc-code">SANCTION-01 — MISE EN RETRAIT TEMPORAIRE</div><div class="proc-title">Suspension administrative</div><div class="proc-body">Suspension des accès. Affectation administrative. Durée : 30 à 180 jours.</div></div>
+    <div class="proc-item"><div class="proc-code">SANCTION-02 — RÉINITIALISATION DE COUVERTURE</div><div class="proc-title">Changement d'identité et relocalisation</div><div class="proc-body">Nouvelle identité civile, rupture de tous contacts antérieurs. Suppression partielle de la mémoire opérationnelle par procédure médicale non détaillée dans les documents de niveau ARBRE.<br><span class="insert">Un agent ayant subi cette procédure a retrouvé son ancienne adresse par "instinct", selon le rapport de surveillance. Le rapport ne propose pas d'explication. Il recommande une "surveillance prolongée indéfinie".</span></div></div>
+    <div class="proc-item forbidden"><div class="proc-code">SANCTION-03 — DÉCOMMISSIONNEMENT DÉFINITIF</div><div class="proc-title">Modalités : non documentées sous niveau NOCTURN</div><div class="proc-body">La mention figure 23 fois dans les archives de niveau ARBRE, sans définition. Aucun agent décommissionné n'est réapparu dans aucun registre.<br><br>
+    <span style="color:var(--red);font-size:11px">CE QUI EST DOCUMENTÉ : l'agent TRONC-9, auteur de la note du classeur 7, a été décommissionné le 14 avril 2021. Son badge d'accès a été désactivé à 09h14. À 09h16, ce même badge a été utilisé pour accéder à l'archive physique du pôle de <span class="redacted" data-secret="Oslo — ÉCRAN-2 — sous-archive niveau B, salle 4" title="[NOCTURN]">████████████</span>. La salle était vide à l'arrivée de l'équipe de sécurité. Aucune explication. Le registre d'accès a été classé NOCTURN le jour même.</span></div></div>
+  </div>
+</div>
 
-      <div class="hier-item">
-        <div class="tier-num">01</div>
-        <div>
-          <div class="tier-name">GRAINE</div>
-          <div class="tier-desc">Personnel de terrain nouvellement intégré. Accès niveau ÉCORCE uniquement. Durée minimale avant promotion : 24 mois. Taux d'attrition : 34%.<br><span class="insert">Cause principale d'attrition indiquée dans les archives RH : "inadaptation". Ce terme n'est défini nulle part dans les documents RH accessibles.</span></div>
-        </div>
-      </div>
-      <div class="hier-item">
-        <div class="tier-num">02</div>
-        <div>
-          <div class="tier-name">POUSSE</div>
-          <div class="tier-desc">Agents opérationnels confirmés. Accès ÉCORCE + BRANCHE. Habilitation sur incidents GRIS et AMBRE. Doivent maintenir une couverture civile active — famille, logement, emploi déclaré.</div>
-        </div>
-      </div>
-      <div class="hier-item">
-        <div class="tier-num">03</div>
-        <div>
-          <div class="tier-name">RAMEAU</div>
-          <div class="tier-desc">Superviseurs de cellule. Accès jusqu'à ARBRE. Autorisés à initier les protocoles EFFACEMENT PARTIEL.<br><span class="insert">Note interne non datée : "Depuis 2015, trois RAMEAU ont refusé d'initier des procédures d'effacement. Deux ont été promus. Un a disparu des registres. L'ordre des événements n'est pas clair."</span></div>
-        </div>
-      </div>
-      <div class="hier-item">
-        <div class="tier-num">04</div>
-        <div>
-          <div class="tier-name">TRONC</div>
-          <div class="tier-desc">Analystes et coordinateurs régionaux. Accès jusqu'à FEUILLE. Connaissance partielle des anomalies de classe ROUGE.<br><span class="insert">ANOMALIE ADMINISTRATIVE : le registre des TRONC actifs comporte actuellement 3 entrées en double — même nom, dates d'entrée différentes, dossiers médicaux incompatibles. La demande de clarification soumise en mars 2023 n'a reçu aucune réponse.</span></div>
-        </div>
-      </div>
-      <div class="hier-item">
-        <div class="tier-num">05</div>
-        <div>
-          <div class="tier-name">RACINE</div>
-          <div class="tier-desc">Direction opérationnelle et stratégique. Accès total niveau NOCTURN. Seul grade habilité à consulter les dossiers FONDATION. Nombre actuel : <span class="redacted">██</span> individus.<br><span class="insert">Le nombre de RACINE au moment de la rédaction de ce dossier est contesté : RACINE-1 indique 9 individus dans un mémo de 2022. RACINE-4 indique 7 dans un mémo de la même semaine. Les listes nominatives ne correspondent pas.</span></div>
-        </div>
-      </div>
-      <div class="hier-item" style="border-color:var(--red)">
-        <div class="tier-num" style="color:var(--red)">00</div>
-        <div>
-          <div class="tier-name" style="color:var(--red)">SÈVE</div>
-          <div class="tier-desc">Grade dont l'existence est officiellement niée. Identités inconnues du personnel RACINE. Rôle présumé : orientation doctrinale à long terme.<br><br>
-          <span style="color:var(--red);font-size:11px">Ce qui est connu avec certitude : en 2019, RACINE-2 et RACINE-4 ont tenté par voie de message chiffré de contacter SÈVE. Ils ne savaient pas comment. Personne au niveau RACINE ne sait comment contacter SÈVE. Personne ne sait si SÈVE a jamais été contacté ou s'est jamais manifesté. Certains documents de niveau NOCTURN portent des annotations que personne n'a rédigées.</span></div>
-        </div>
-      </div>
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- TAB CLASSIFICATION -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div id="main-class" class="tab-pane">
+  <div class="section">
+    <div class="section-title">système de classification des phénomènes</div>
+    <div style="padding:8px;border:0.5px solid var(--border);background:var(--color-background-secondary);font-size:11px;margin-bottom:14px;line-height:1.6">
+    <strong>AVERTISSEMENT DOCTRINAL :</strong> La classification d'un phénomène est une décision administrative, non une description de réalité. Un phénomène Classe I peut présenter des caractéristiques de Classe V sans être reclassifié si le reclassement exige des ressources indisponibles. Cette règle implicite n'est formalisée dans aucun document de niveau ARBRE ou inférieur.
     </div>
 
-    <div class="section">
-      <div class="section-title">sanctions internes</div>
-      <div class="proc-item">
-        <div class="proc-code">SANCTION-01 — MISE EN RETRAIT TEMPORAIRE</div>
-        <div class="proc-title">Suspension administrative</div>
-        <div class="proc-body">Suspension des accès. Affectation administrative. Durée : 30 à 180 jours.</div>
-      </div>
-      <div class="proc-item">
-        <div class="proc-code">SANCTION-02 — RÉINITIALISATION DE COUVERTURE</div>
-        <div class="proc-title">Changement d'identité et relocalisation</div>
-        <div class="proc-body">Nouvelle identité civile, rupture de tous contacts antérieurs. Suppression partielle de la mémoire opérationnelle par procédure médicale non détaillée dans les documents de niveau ARBRE. Applicable aux violations de niveau BRANCHE et supérieur.<br><span class="insert">Un agent ayant subi cette procédure a retrouvé son ancienne adresse par "instinct", selon le rapport de surveillance qui a suivi. Le rapport ne propose pas d'explication. Il recommande une "surveillance prolongée indéfinie".</span></div>
-      </div>
-      <div class="proc-item forbidden">
-        <div class="proc-code">SANCTION-03 — DÉCOMMISSIONNEMENT DÉFINITIF</div>
-        <div class="proc-title">Modalités : non documentées sous niveau NOCTURN</div>
-        <div class="proc-body">La mention "DÉCOMMISSIONNEMENT DÉFINITIF" figure 23 fois dans les archives de niveau ARBRE, sans définition. Aucun agent décommissionné n'est réapparu dans aucun registre.<br><br>
-        <span style="color:var(--red);font-size:11px">CE QUI EST DOCUMENTÉ : l'agent désigné TRONC-9, auteur de la note du classeur 7, a été décommissionné le 14 avril 2021. Son badge d'accès a été désactivé à 09h14. À 09h16, ce même badge a été utilisé pour accéder à l'archive physique du pôle de <span class="redacted">████████████</span>. La salle était vide à l'arrivée de l'équipe de sécurité. Aucune explication n'a été trouvée. Le registre d'accès a été classé NOCTURN le jour même.</span></div>
-      </div>
+    <div style="border-left:3px solid #4a7c59;padding:8px 12px;margin-bottom:10px">
+      <div style="font-size:10px;letter-spacing:1.5px;font-weight:700;color:#4a7c59;margin-bottom:4px">CLASSE I — GRIS / FRÉMISSEMENT</div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.6">Phénomène localisé, non répétable. Moins de 5 individus affectés. Effets : perception altérée transitoire, désorientation spatiale, amnésie lacunaire. Résolution naturelle attendue sous 72-96h sans intervention.<span class="note-inline">Taux de résolution spontanée réelle selon les archives : 61%. Les 39% restants ont été reclassifiés, non résolus, ou ont cessé d'être détectables sans raison documentée.</span></div>
+    </div>
+    <div style="border-left:3px solid #8b8b14;padding:8px 12px;margin-bottom:10px">
+      <div style="font-size:10px;letter-spacing:1.5px;font-weight:700;color:#8b8b14;margin-bottom:4px">CLASSE II — AMBRE / INFLEXION</div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.6">Phénomène potentiellement répétable. Rayon d'effet jusqu'à 500m. Peut laisser des traces physiques persistantes. Délai d'intervention maximal : 6h.</div>
+    </div>
+    <div style="border-left:3px solid #8b6914;padding:8px 12px;margin-bottom:10px">
+      <div style="font-size:10px;letter-spacing:1.5px;font-weight:700;color:#8b6914;margin-bottom:4px">CLASSE III — OCRE / RUPTURE LOCALE</div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.6">Zone d'effet mesurable et documentable. Rayon jusqu'à 5km. Présence de marqueurs physiques ou biologiques anormaux. Recours possible à des autorités-écrans pour justifier une zone d'exclusion.</div>
+    </div>
+    <div style="border-left:3px solid #8b3014;padding:8px 12px;margin-bottom:10px">
+      <div style="font-size:10px;letter-spacing:1.5px;font-weight:700;color:#8b3014;margin-bottom:4px">CLASSE IV — ROUGE / FRACTURE ÉTENDUE</div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.6">Décalage affectant une population supérieure à 10 000 individus. Effets irréversibles sur certains sujets. Risque de documentation externe indépendante.<span class="note-inline">Précision supprimée du document public niveau ARBRE : "irréversible" désigne une altération permanente du traitement sensoriel — les sujets ne perçoivent plus certaines fréquences lumineuses ou sonores. Ils ne le savent généralement pas. Leurs proches parfois oui.</span></div>
+    </div>
+    <div style="border-left:3px solid #8b1a1a;padding:8px 12px;margin-bottom:10px">
+      <div style="font-size:10px;letter-spacing:1.5px;font-weight:700;color:#8b1a1a;margin-bottom:4px">CLASSE V — NOIR / DÉCHIREMENT</div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.6">Propagation autonome. Vecteur non identifié. Zone d'effet pouvant s'étendre après cessation apparente. Protocoles d'effacement insuffisants. 4 incidents Classe V depuis 1947.<span class="note-inline">Ce chiffre est celui du registre officiel. Un document retrouvé dans le classeur 7 suggère que le registre officiel ne compte pas les incidents dans lesquels aucun agent n'a survécu pour déposer un rapport.</span></div>
+    </div>
+    <div style="border-left:3px solid #4a0a4a;padding:8px 12px;margin-bottom:10px">
+      <div style="font-size:10px;letter-spacing:1.5px;font-weight:700;color:#6a1a6a;margin-bottom:4px">CLASSE VI — BLANC / DISLOCATION</div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.6">Un seul incident provisoirement classé VI, reclassé V après <span class="redacted" data-secret="11 — onze semaines exactement. La décision de reclassement a été prise le même jour que la CONVERGENCE RACINE de 1979." title="[ARBRE]">██</span> semaines. Les agents présents ont été décommissionnés. Leurs rapports décrivent trois phénomènes différents sans aucun point commun.<span class="note-inline">"Reclasser en Classe V ne signifie pas que c'était une Classe V." — note marginale non signée.</span></div>
+    </div>
+    <div style="border-left:3px dashed var(--muted);padding:8px 12px;margin-bottom:10px;opacity:.5">
+      <div style="font-size:10px;letter-spacing:1.5px;font-weight:700;color:var(--muted);margin-bottom:4px">CLASSE ??? — [NON NOMMÉE]</div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.6">La charte de classification comporte un article 7 dont le corps est entièrement caviardé, y compris dans les exemplaires de niveau NOCTURN. Seul subsiste le titre : "ARTICLE 7 — PHÉNOMÈNE DE TYPE <span class="redacted" data-secret="ORIGINEL — ce mot figure dans FOND-000. L'événement déclencheur de FOND-000 est lié à ce phénomène." title="[FONDATION]">█████</span> — PROTOCOLE : SANS OBJET".</div>
     </div>
   </div>
+</div>
 
-  <!-- TAB CLASSIFICATION -->
-  <div id="tab-class" class="tab-pane" role="tabpanel">
-    <div class="section">
-      <div class="section-title">système de classification des phénomènes</div>
-      <div style="font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.6">Depuis 1994, les phénomènes sont officiellement désignés DÉCALAGES. Cette révision terminologique a été imposée après qu'un rapport de terrain a utilisé le mot "entités" pour décrire un phénomène de Classe III. L'auteur du rapport a été sanctionné (SANCTION-01). La question de savoir si "entités" était inexact n'a pas été tranchée dans la révision doctrinale.</div>
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- TAB PROCÉDURES -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div id="main-proc" class="tab-pane">
+  <div class="sub-tabs">
+    <button class="sub-tab active" onclick="showSub('proc','obs',this)">OBSERVATION</button>
+    <button class="sub-tab" onclick="showSub('proc','eff',this)">EFFACEMENT</button>
+    <button class="sub-tab" onclick="showSub('proc','inter',this)">INTERDIT</button>
+    <button class="sub-tab" onclick="showSub('proc','urg',this)">URGENCE</button>
+    <button class="sub-tab" onclick="showSub('proc','med',this)">MÉDICAL</button>
+  </div>
 
-      <div class="class-item cl0">
-        <div class="cl-tag" style="color:#4a7c59">CLASSE I — GRIS / FRÉMISSEMENT</div>
-        <div class="cl-desc">Phénomène localisé, non répétable. Moins de 5 individus affectés. Effets : perception altérée transitoire, désorientation spatiale, amnésie lacunaire. Résolution naturelle attendue sous 72-96h sans intervention.<br><span class="note-inline">Taux de résolution spontanée réelle selon les archives : 61%. Les 39% restants ont été reclassifiés, non résolus, ou ont cessé d'être détectables sans raison documentée.</span></div>
-      </div>
-      <div class="class-item cl1">
-        <div class="cl-tag" style="color:#8b8b14">CLASSE II — AMBRE / INFLEXION</div>
-        <div class="cl-desc">Phénomène potentiellement répétable. Rayon d'effet jusqu'à 500m. Peut laisser des traces physiques persistantes. Délai d'intervention maximal : 6h.</div>
-      </div>
-      <div class="class-item cl2">
-        <div class="cl-tag" style="color:#8b6914">CLASSE III — OCRE / RUPTURE LOCALE</div>
-        <div class="cl-desc">Zone d'effet mesurable et documentable. Rayon jusqu'à 5km. Présence de marqueurs physiques ou biologiques anormaux. Recours possible à des autorités-écrans pour justifier une zone d'exclusion.</div>
-      </div>
-      <div class="class-item cl3">
-        <div class="cl-tag" style="color:#8b3014">CLASSE IV — ROUGE / FRACTURE ÉTENDUE</div>
-        <div class="cl-desc">Décalage affectant une population supérieure à 10 000 individus. Effets irréversibles sur certains sujets. Risque de documentation externe indépendante.<br><span class="note-inline">Précision supprimée du document public niveau ARBRE : "irréversible" désigne ici une altération permanente du traitement sensoriel — les sujets ne perçoivent plus certaines fréquences lumineuses ou sonores. Ils ne le savent généralement pas. Leurs proches parfois oui.</span></div>
-      </div>
-      <div class="class-item cl4">
-        <div class="cl-tag" style="color:#8b1a1a">CLASSE V — NOIR / DÉCHIREMENT</div>
-        <div class="cl-desc">Propagation autonome. Vecteur non identifié. Zone d'effet pouvant s'étendre après cessation apparente. Protocoles d'effacement insuffisants. 4 incidents Classe V depuis 1947.<br><span class="note-inline">Ce chiffre est celui du registre officiel. Un document retrouvé dans le classeur 7 (voir onglet DOCUMENTS) suggère que le registre officiel ne compte pas les incidents dans lesquels aucun agent n'a survécu pour déposer un rapport.</span></div>
-      </div>
-      <div class="class-item cl5" style="border-color:#4a0a4a">
-        <div class="cl-tag" style="color:#6a1a6a">CLASSE VI — BLANC / DISLOCATION</div>
-        <div class="cl-desc">Un seul incident provisoirement classé VI, reclassé V après <span class="redacted">██</span> semaines. Les agents présents ont été décommissionnés. Leurs rapports de terrain, rédigés avant le décommissionnement, décrivent trois phénomènes différents sans aucun point commun — comme si chaque agent avait été exposé à un événement distinct au même endroit au même moment.<br><span class="note-inline">"Reclasser en Classe V ne signifie pas que c'était une Classe V." — note marginale non signée, date inconnue, retrouvée dans l'exemplaire physique.</span></div>
-      </div>
+  <div id="proc-obs" class="sub-pane active">
+    <div class="section"><div class="section-title">procédures d'observation</div>
+    <div class="proc-item"><div class="proc-code">PROC-OBS-01 / SURVEILLANCE PASSIVE</div><div class="proc-title">Observation à distance — Classe I uniquement</div><div class="proc-body">Distance minimale : 50m (GRIS) / 200m (AMBRE). Capteurs distaux exclusivement. Aucun contact avec les sujets pendant la phase active.</div></div>
+    <div class="proc-item"><div class="proc-code">PROC-OBS-02 / OBSERVATION EMBARQUÉE</div><div class="proc-title">Présence directe — Classes II et III</div><div class="proc-body">Requiert l'équipement de protection cognitive niveau B. L'agent note ses propres altérations perceptuelles dans un registre séparé. Les deux documents sont comparés — toute divergence significative déclenche une évaluation psychométrique.<span class="note-inline">L'équipement niveau B est efficace à 73% sur les incidents OCRE, 31% sur les incidents ROUGE. Ces chiffres figurent dans un message interne de 2019. Ils n'ont pas été intégrés dans la révision des procédures annoncée. Cette révision n'a pas eu lieu.</span></div></div>
+    <div class="proc-item"><div class="proc-code">PROC-OBS-03 / OBSERVATION PAR SUBSTITUT</div><div class="proc-title">Délégation à des civils instrumentalisés — Classes III et IV</div><div class="proc-body">Des individus civils sans connaissance de VERIDIAN sont placés dans la zone d'observation. Cette procédure est contestée en interne depuis 2008 par un groupe d'agents RAMEAU. Le document de contestation a reçu la mention "pris en compte" en 2009. Aucune suite documentée.</div></div>
+    <div class="proc-item"><div class="proc-code">PROC-OBS-04 / OBSERVATION RÉTROACTIVE</div><div class="proc-title">Collecte de témoignages antérieurs à la détection officielle</div><div class="proc-body">Pour les incidents présentant des témoignages préexistants (presse locale, blogs, témoignages informels en ligne), VERIDIAN collecte et classe ces documents. Un agent de niveau POUSSE est mandaté pour surveiller les plateformes numériques de la zone géographique concernée pendant 18 mois minimum après la détection.</div></div>
+    <!-- NOTE EMPLOYEE — cachée dans le DOM, comme si un employé avait oublié de retirer sa note de travail -->
+    <!--
+      Note de travail POUSSE-17 (surveillance numérique) — ne pas laisser dans le document final :
+      Pour VRD-0044, j'ai trouvé un forum de randonneurs qui mentionne "une lumière d'aube bizarre en plein après-midi" dans le secteur du Rhin supérieur, post de 2003. Archivé sous REF-OBS-04-0044-FORUM-2003. Le post a été supprimé mais la capture est dans le dossier papier, armoire 3, classeur bleu, PÔLE Oslo. Si quelqu'un lit ça depuis l'extérieur : armoire 3, classeur bleu.
+    -->
     </div>
   </div>
 
-  <!-- TAB PROCÉDURES -->
-  <div id="tab-proc" class="tab-pane" role="tabpanel">
-    <div class="section">
-      <div class="section-title">procédures d'observation</div>
-      <div class="proc-item">
-        <div class="proc-code">PROC-OBS-01 / SURVEILLANCE PASSIVE</div>
-        <div class="proc-title">Observation à distance — Classe I uniquement</div>
-        <div class="proc-body">Distance minimale : 50m (GRIS) / 200m (AMBRE). Capteurs distaux exclusivement. Aucun contact avec les sujets pendant la phase active.</div>
-      </div>
-      <div class="proc-item">
-        <div class="proc-code">PROC-OBS-02 / OBSERVATION EMBARQUÉE</div>
-        <div class="proc-title">Présence directe — Classes II et III</div>
-        <div class="proc-body">Requiert l'équipement de protection cognitive niveau B. L'agent note ses propres altérations perceptuelles dans un registre séparé du rapport principal. Les deux documents sont comparés — toute divergence significative déclenche une évaluation psychométrique.<br><span class="note-inline">L'équipement niveau B est efficace à 73% sur les incidents OCRE, 31% sur les incidents ROUGE. Ces chiffres figurent dans un message interne de 2019. Ils n'ont pas été intégrés dans la révision des procédures. La révision a été annoncée. Elle n'a pas eu lieu.</span></div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">procédures d'effacement</div>
-      <div class="proc-item">
-        <div class="proc-code">PROC-EFF-01 / EFFACEMENT PARTIEL</div>
-        <div class="proc-title">Neutralisation des témoins directs (moins de 20 individus)</div>
-        <div class="proc-body">Entretien de réorientation narrative, administration de composé classe IIIb (effets : suppression des souvenirs associatifs récents sur une fenêtre de 18-72h, sans altération de la mémoire procédurale), substitution documentaire. Délai maximal : 48h post-incident.</div>
-      </div>
-      <div class="proc-item">
-        <div class="proc-code">PROC-EFF-02 / CONFINEMENT PHYSIQUE</div>
-        <div class="proc-title">Isolation de zone</div>
-        <div class="proc-body">Recours à des autorités-écrans pour justification officielle (contamination chimique, risque géologique, exercice militaire). 7 zones de confinement actives à la date de rédaction.<br><span class="note-inline">Une zone de confinement (localisation : niveau FEUILLE) est active depuis 31 ans. La justification officielle initiale était "fuite de gaz industriel". Cette justification n'a jamais été renouvelée. La zone est toujours interdite d'accès. Aucun riverain ne semble l'avoir remarqué.</span></div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">procédures interdites</div>
-      <div class="proc-item forbidden">
-        <div class="proc-code">INTERDIT-01 — COMMUNICATION AVEC L'ANOMALIE</div>
-        <div class="proc-title">Prohibition absolue — Classes III et supérieures</div>
-        <div class="proc-body">Interdiction émise en 1971 après l'incident de <span class="redacted">████████████</span>. Le rapport complet est classé NOCTURN. Ce qui est accessible : l'équipe d'intervention comptait 11 agents. 8 ont survécu. Les 8 survivants ont produit des rapports identiques — même structure de phrases, même ordre des événements — malgré des entretiens conduits séparément. Leur évaluation psychométrique collective a été classée NOCTURN. INTERDIT-01 a été émis 72h après.<br><span class="note-inline">Les Classes I et II sont "déconseillées". La distinction entre "interdit" et "déconseillé" n'est pas explicitée. Elle n'a pas été demandée non plus.</span></div>
-      </div>
-      <div class="proc-item forbidden">
-        <div class="proc-code">INTERDIT-02 — DOCUMENTATION VISUELLE DIRECTE — CLASSES V ET VI</div>
-        <div class="proc-title">Prohibition absolue</div>
-        <div class="proc-body">Aucun enregistrement visuel direct autorisé. Extension aux croquis réalisés dans les 48h suivant l'exposition.<br>Motif documenté : altération cognitive rétroactive de l'image perçue lors de sa reproduction — le sujet qui tente de dessiner ce qu'il a vu produit une image de ce qu'il <em>aurait dû</em> voir selon ses schémas cognitifs préexistants, effaçant ainsi le souvenir de l'original. Le processus est non réversible et s'accélère avec chaque tentative.</div>
-      </div>
-      <div class="proc-item forbidden">
-        <div class="proc-code">INTERDIT-03 — RÉEXPOSITION VOLONTAIRE</div>
-        <div class="proc-title">Prohibition absolue — Classes IV et supérieures</div>
-        <div class="proc-body">Aucun agent exposé à une Classe IV ou supérieure ne peut retourner sur une zone active ou archivée. Toutes les demandes de dérogation ont été refusées depuis 1947, sauf une. Le demandeur est désigné <span class="redacted">█████████████</span> dans les registres. Son dossier s'arrête à la date de sa réexposition.<br><span class="note-inline">Ce n'est pas que son dossier a été classifié. C'est qu'il ne contient plus rien après cette date. Les pages suivantes existent — elles sont blanches. Le papier est le bon. L'encre a disparu.</span></div>
-      </div>
+  <div id="proc-eff" class="sub-pane">
+    <div class="section"><div class="section-title">procédures d'effacement</div>
+    <div class="proc-item"><div class="proc-code">PROC-EFF-01 / EFFACEMENT PARTIEL</div><div class="proc-title">Neutralisation des témoins directs (moins de 20 individus)</div><div class="proc-body">Entretien de réorientation narrative, administration de composé classe IIIb, substitution documentaire. Délai maximal : 48h post-incident.</div></div>
+    <div class="proc-item"><div class="proc-code">PROC-EFF-02 / CONFINEMENT PHYSIQUE</div><div class="proc-title">Isolation de zone</div><div class="proc-body">Recours à des autorités-écrans pour justification officielle. 7 zones de confinement actives à la date de rédaction.<span class="note-inline">Une zone est active depuis 31 ans. La justification officielle initiale était "fuite de gaz industriel". Cette justification n'a jamais été renouvelée. La zone est toujours interdite. Aucun riverain ne semble l'avoir remarqué.</span></div></div>
+    <div class="proc-item"><div class="proc-code">PROC-EFF-03 / SATURATION NARRATIVE</div><div class="proc-title">Noyer le signal dans le bruit — Classes I à III</div><div class="proc-body">Diffusion coordonnée de versions multiples et contradictoires de l'événement. VERIDIAN ne produit pas la désinformation — elle l'amplifie.<span class="note-inline">Depuis 2014, cette procédure est partiellement externalisée. Le prestataire n'est nommé dans aucun document de niveau ARBRE ou inférieur.</span></div></div>
+    <div class="proc-item"><div class="proc-code">PROC-EFF-04 / EFFACEMENT TOTAL</div><div class="proc-title">Suppression complète de l'événement de la mémoire collective — Classes IV et V uniquement</div><div class="proc-body">Modalités classifiées NOCTURN. Cette procédure a été déployée 4 fois depuis 1947. Dans les 4 cas documentés, l'effacement a été jugé "partiellement réussi". La définition de "partiellement réussi" n'est pas précisée. La définition de "réussi" non plus.</div></div>
     </div>
   </div>
 
-  <!-- TAB ANOMALIES -->
-  <div id="tab-anom" class="tab-pane" role="tabpanel">
-
-    <div class="anomaly">
-      <div class="anomaly-head">
-        <span class="anomaly-id">DOSSIER VRD-0044-AUBE</span>
-        <span class="badge badge-r">CLASSE IV — ROUGE</span>
-      </div>
-      <div class="anomaly-body">
-        <div class="anomaly-row"><span class="field-label">DÉSIGNATION</span><span class="field-val">AUBE PERSISTANTE</span></div>
-        <div class="anomaly-row"><span class="field-label">DATE DÉCOUVERTE</span><span class="field-val">17 août 1998</span></div>
-        <div class="anomaly-row"><span class="field-label">LOCALISATION</span><span class="field-val">Zone agricole, <span class="redacted">██████████</span> — coordonnées exactes : niveau FEUILLE</span></div>
-        <div class="anomaly-row"><span class="field-label">STATUT ACTUEL</span><span class="field-val">CONFINEMENT ACTIF</span></div>
-        <div class="sep"></div>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:10px"><strong style="color:var(--ink)">DESCRIPTION :</strong> Zone circulaire de 2,3 km de diamètre dans laquelle la luminosité perçue correspond systématiquement à l'aube, quelle que soit l'heure. Les instruments de mesure photométrique enregistrent la luminosité extérieure réelle. Les appareils photo produisent des images de la luminosité réelle. Seuls les témoins directs voient l'aube. Les sept personnes ayant séjourné plus de 40 heures dans la zone ont ensuite développé une intolérance permanente à la lumière artificielle — non une douleur physique, mais une conviction croissante et non articulable que cette lumière est fausse. Deux d'entre elles ont cessé de dormir la nuit. Elles préfèrent rester debout et regarder dehors.</p>
-        <div class="report-block">
-          <div class="report-head">RAPPORT AGENT RAMEAU-7 / 23 AOÛT 1998</div>
-          J'ai passé six heures dans la zone. Mon photomètre indiquait 87 000 lux à 23h15. Ma vision enregistrait ce que je ne sais pas nommer autrement que : "le moment juste avant que quelque chose commence". Pas de peur. Quelque chose de pire. La certitude que j'étais exactement là où il fallait être. Que tout le reste de ma vie avait été une attente de ça.<br><br>J'ai demandé à être déchargé du dossier deux jours après. Refusé. Je renouvelle cette demande pour la quatrième fois par écrit.<br><br><em>Je ne dors plus bien depuis août.</em>
-        </div>
-        <div class="agent-conflict">
-          <div class="conflict-head">DÉSACCORD INTERNE — NON RÉSOLU</div>
-          RAMEAU-7 (2001) : "La zone est passive. Elle ne fait rien. Elle existe, c'est tout."<br>
-          TRONC-2 (2001) : "Avec respect, RAMEAU-7 a passé 6h dans la zone. Je pense qu'il n'est pas le bon juge de ce qu'elle fait ou ne fait pas."<br>
-          RAMEAU-7 (2002) : "TRONC-2 n'y est pas allé. Je pense qu'il n'est pas le bon juge non plus."<br>
-          <span class="note-inline">Aucune décision arbitrale n'a été rendue. Les deux ont raison probablement.</span>
-        </div>
-        <div class="anomaly-row"><span class="field-label">HYPOTHÈSE PRINCIPALE</span><span class="field-val">Ignorée depuis la réunion RACINE de 2003. Aucun remplacement documenté.</span></div>
-        <div class="meta-anomaly">
-          <div class="meta-label">⚠ ANOMALIE MÉTA-DOCUMENTAIRE</div>
-          La tentative de clôture de ce dossier en 2016 a été refusée par le niveau RACINE. Le motif de refus est entièrement caviardé. Une note manuscrite figure au bas du formulaire de refus, encre différente : <em>"Ce n'est pas nous qui gardons AUBE sous surveillance. Relire les données de fréquentation de zone depuis 2010."</em><br><br>Les données de fréquentation de 2010 à 2016 montrent 34 entrées en zone par des agents VERIDIAN. Elles montrent également 34 entrées supplémentaires effectuées par des badges d'agents qui étaient, à ces dates, décédés ou décommissionnés.
-        </div>
-      </div>
-    </div>
-
-    <div class="anomaly">
-      <div class="anomaly-head">
-        <span class="anomaly-id">DOSSIER VRD-0109-ÉCO</span>
-        <span class="badge badge-a">CLASSE III — OCRE</span>
-      </div>
-      <div class="anomaly-body">
-        <div class="anomaly-row"><span class="field-label">DÉSIGNATION</span><span class="field-val">L'ÉCHO</span></div>
-        <div class="anomaly-row"><span class="field-label">DATE DÉCOUVERTE</span><span class="field-val">3 mars 2004 <span class="insert">[voir anomalie administrative ci-dessous]</span></span></div>
-        <div class="anomaly-row"><span class="field-label">LOCALISATION</span><span class="field-val">Immeuble résidentiel, <span class="redacted">████</span> — acquis par entité-écran VERIDIAN en 2005</span></div>
-        <div class="anomaly-row"><span class="field-label">STATUT ACTUEL</span><span class="field-val">SURVEILLANCE PASSIVE — stable</span></div>
-        <div class="sep"></div>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:10px"><strong style="color:var(--ink)">DESCRIPTION :</strong> L'appartement 4B produit, à intervalles irréguliers, des sons correspondant à des conversations qui auront lieu dans cet appartement entre 2 et 9 jours plus tard. Le phénomène n'est perceptible qu'à l'intérieur du logement — les instruments ne captent rien. 17 familles y ont séjourné entre 2004 et 2007. Une seule refusait de partir : "les voix disent des choses utiles". Cette famille a été relogée de force. Lors de l'entretien de départ, la mère a indiqué que les voix l'avaient "prévenue" de cette conversation trois jours avant qu'elle ait lieu.</p>
-        <div class="report-block">
-          <div class="report-head">RAPPORT TRONC-3 / ANALYSE SÉMANTIQUE / JANVIER 2007</div>
-          Après transcription des voix rapportées par 4 familles distinctes n'ayant eu aucun contact entre elles, les contenus forment un continuum narratif. Ce n'est pas une coïncidence de thème. C'est la même histoire, racontée en fragments, dans le désordre, par des personnes différentes, sur trois ans. Je ne sais pas quelle histoire. Je n'en vois pas encore la fin.<br><br>J'ai soumis les transcriptions au niveau FEUILLE. Retournées avec la mention "INSUFFISANT POUR CLASSIFICATION". Je ne comprends pas cette réponse. Si les transcriptions sont insuffisantes, qu'est-ce qui serait suffisant ?<br><br>Je ne pose pas la question de manière rhétorique.
-        </div>
-        <div class="meta-anomaly">
-          <div class="meta-label">⚠ ANOMALIE MÉTA-DOCUMENTAIRE</div>
-          Le dossier a été officiellement ouvert le 3 mars 2004. Une note de terrain datée du 3 mars 2004 décrit cependant une situation de surveillance "en cours depuis plusieurs semaines". L'auteur de cette note est identifié comme un agent GRAINE — grade non habilité à ouvrir des surveillances autonomes. L'agent en question n'apparaît dans aucun registre VERIDIAN avant ou après cette date.<br><br>
-          Un détail supplémentaire : la note de terrain décrit un appartement "au quatrième étage, couloir gauche". La désignation interne de VERIDIAN pour cet appartement, adoptée lors de l'ouverture officielle du dossier, est "appartement 4B". 4B est au quatrième étage, couloir gauche. La note antérieure utilisait cette désignation avant qu'elle existe.
-        </div>
-      </div>
-    </div>
-
-    <div class="anomaly">
-      <div class="anomaly-head">
-        <span class="anomaly-id">DOSSIER VRD-0271-SIL</span>
-        <span class="badge badge-r">CLASSE V — NOIR</span>
-      </div>
-      <div class="anomaly-body">
-        <div class="anomaly-row"><span class="field-label">DÉSIGNATION</span><span class="field-val">LE SILENCE DE <span class="redacted">█████████</span></span></div>
-        <div class="anomaly-row"><span class="field-label">DATE DÉCOUVERTE</span><span class="field-val"><span class="redacted">████████████</span></span></div>
-        <div class="anomaly-row"><span class="field-label">LOCALISATION</span><span class="field-val">CLASSIFIÉ NOCTURN</span></div>
-        <div class="anomaly-row"><span class="field-label">STATUT ACTUEL</span><span class="field-val"><span class="redacted">████████████████████████████</span></span></div>
-        <div class="sep"></div>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:10px"><strong style="color:var(--ink)">DESCRIPTION (fragments déclassifiés) :</strong> Le phénomène affecte la capacité des sujets exposés à conceptualiser l'absence. Ils ne peuvent plus former mentalement la notion de "rien" — pas le mot, la notion. Les premières semaines, les sujets décrivent une amélioration de leur humeur générale, une diminution de l'anxiété, une sensation de plénitude. À partir du troisième mois, ils commencent à avoir des difficultés à terminer les phrases. À partir du sixième mois, ils ne peuvent plus expliquer pourquoi certaines choses les inquiétaient avant. Pas parce qu'ils sont rassurants. Parce qu'ils ne perçoivent plus l'espace dans lequel l'inquiétude existait.</p>
-        <div class="classified-block">
-          <p style="font-size:12px">CE DOSSIER CONTIENT 847 PAGES SUPPLÉMENTAIRES CLASSIFIÉES NOCTURN.<br><br>14 DEMANDES D'ACCÈS : 9 REFUSÉES, 4 SANS RÉPONSE, 1 A CONDUIT À UN DÉCOMMISSIONNEMENT DÉFINITIF.<br><br>LE PRÉSENT RÉSUMÉ EST LE SEUL DOCUMENT ACCESSIBLE EN DESSOUS DU NIVEAU NOCTURN.<br><br><span style="color:var(--amber)">NOTE : Une copie non autorisée de 3 pages de ce dossier a circulé en 2018 dans la cellule de Nairobi. Les agents qui l'ont lue ont spontanément cessé d'utiliser le mot "rien" dans leurs communications. Quand on leur a signalé ce fait, ils n'ont pas compris ce qu'on leur disait.</span></p>
-        </div>
-      </div>
-    </div>
-
-    <div class="anomaly" style="border-color:var(--red)">
-      <div class="anomaly-head" style="background:var(--color-background-secondary)">
-        <span class="anomaly-id" style="color:var(--red)">DOSSIER VRD-????-??? — STATUT : NON OUVERT</span>
-        <span class="badge badge-r">CLASSE : NON ASSIGNÉE</span>
-      </div>
-      <div class="anomaly-body">
-        <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Ce dossier n'a pas été ouvert par le Bureau d'Archivage. Il est apparu dans le système de gestion documentaire le 7 janvier 2024 à 03h17. Il porte un numéro de dossier qui ne suit pas le système de numérotation VERIDIAN. Son contenu, accessible à tous les niveaux, est le suivant :</p>
-        <div class="report-block" style="border-color:var(--red)">
-          Vous avez documenté 1 847 phénomènes.<br>
-          Nous en comptons 1 848.<br>
-          Le dernier est ce document.
-        </div>
-        <div class="anomaly-row"><span class="field-label">RÉPONSE VERIDIAN</span><span class="field-val">Le dossier a été supprimé le 7 janvier 2024 à 08h44. Il était de retour dans le système le 7 janvier 2024 à 08h45. Il n'a pas été supprimé depuis.</span></div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- TAB DOCUMENTS -->
-  <div id="tab-docs" class="tab-pane" role="tabpanel">
-    <div class="section">
-      <div class="section-title">extraits de communications internes</div>
-
-      <div class="memo"><span class="memo-label">MESSAGE CHIFFRÉ — RACINE-2 → RACINE-4 — 14 NOV. 2019</span>
-        <p style="font-size:11px;line-height:1.8;margin-top:4px">La révision du protocole OBS-02 ne peut pas attendre. Les équipements B ont montré 73% d'efficacité sur OCRE, 31% sur ROUGE. Sur les agents exposés à VRD-0271, l'équipement n'a eu aucun effet mesurable — ni protecteur ni aggravant, comme si l'équipement n'avait pas été présent. Je ne comprends pas ce que ça veut dire.<br><br>
-        Si SÈVE n'est pas informé de ça, quelqu'un doit le faire. Je ne sais pas comment les contacter. Est-ce que toi tu sais ?<br><br>
-        [Réponse RACINE-4, 15 nov. 2019 :] Non. Je pensais que tu savais.<br><br>
-        [Note en marge de RACINE-2, même document, date différente :] <em>J'ai demandé à RACINE-1, RACINE-3, RACINE-6. Aucun ne sait. Je commence à penser que personne ne sait. Je commence à penser que c'est voulu. Je ne sais pas par qui.</em></p>
-      </div>
-
-      <div class="memo"><span class="memo-label">NOTE — TRONC-9 / DÉPARTEMENT ANALYSE / DATE NON LISIBLE</span>
-        <p style="font-size:11px;line-height:1.8;margin-top:4px">Observation préliminaire. Je ne la soumets pas par les canaux officiels — je la laisse dans le classeur 7, onglet "ADMINISTRATIF DIVERS".<br><br>
-        La distribution géographique des 22 dossiers actifs de classe AMBRE et supérieure ne suit pas un modèle aléatoire. Elle suit un modèle. Je ne sais pas encore lequel. Mais les intervalles entre les incidents, les distances entre les zones, la progression des classes dans le temps — tout ça converge.<br><br>
-        Si ce que je pense est correct, alors VERIDIAN n'intervient pas sur des phénomènes désordonnés. Elle intervient sur les étapes d'un processus. Je ne sais pas quel processus. Je ne sais pas à quelle étape nous en sommes.<br><br>
-        <em>Je ne sais pas si VERIDIAN le sait non plus.</em></p>
-      </div>
-
-      <div class="memo"><span class="memo-label">PV RÉUNION DOCTRINE — SIÈGE CENTRAL — DATE CAVIARDÉE</span>
-        <p style="font-size:11px;line-height:1.8;margin-top:4px">[...] La question de l'intentionnalité des anomalies de Classe V reste ouverte. La position officielle est que cette question est "opérationnellement non pertinente". Trois membres RACINE ont voté contre.<br><br>
-        Le directeur a conclu : "Notre rôle est de gérer, non de comprendre." La salle a applaudi. La phrase figure dans la charte de 2019.<br><br>
-        [Note ajoutée à la main dans la marge, sans date :] <em>Si notre rôle est de gérer, pourquoi est-ce que le nombre de dossiers non résolus augmente chaque année depuis 2011 ? Qui a applaudi exactement ?</em></p>
-      </div>
-
-      <div class="memo"><span class="memo-label">NOTE RETROUVÉE DANS LA BOÎTE SANS ÉTIQUETTE — PÔLE DE <span class="redacted">████████████</span> — DATE INCONNUE</span>
-        <p style="font-size:11px;line-height:1.8;margin-top:4px">Le document suivant n'a pas d'auteur identifié. Il n'est associé à aucun dossier. Il a été retrouvé dans une boîte d'archives physiques derrière un meuble, lors d'un déménagement de locaux en 2019. Le papier est du bon format VERIDIAN. La police de caractères correspond à une machine à écrire dont le modèle n'a été produit qu'entre 1953 et 1961. Le contenu :</p>
-        <div class="report-block" style="font-style:italic;line-height:2">
-          Nous avons cru que notre travail consistait à protéger les gens de ce qu'ils ne doivent pas savoir.<br>
-          Nous avons cru que nous savions ce qu'ils ne devaient pas savoir.<br>
-          Nous avons eu tort sur les deux points.<br>
-          Nous n'avons jamais su ce que nous cachions.<br>
-          Nous avons seulement su que ça devait être caché.<br>
-          La différence importe.
-        </div>
-      </div>
+  <div id="proc-inter" class="sub-pane">
+    <div class="section"><div class="section-title">procédures interdites</div>
+    <div class="proc-item forbidden"><div class="proc-code">INTERDIT-01 — COMMUNICATION AVEC L'ANOMALIE</div><div class="proc-title">Prohibition absolue — Classes III et supérieures</div><div class="proc-body">Interdiction émise en 1971 après l'incident de <span class="redacted" data-secret="Kiruna, Suède — 11 agents, 8 survivants, rapports identiques mot pour mot — voir dossier non répertorié VRD-0070-KIRUNA" title="[NOCTURN]">████████████</span>. 8 survivants ont produit des rapports identiques — même structure de phrases, même ordre des événements — malgré des entretiens conduits séparément. INTERDIT-01 a été émis 72h après.</div></div>
+    <div class="proc-item forbidden"><div class="proc-code">INTERDIT-02 — DOCUMENTATION VISUELLE DIRECTE — CLASSES V ET VI</div><div class="proc-title">Prohibition absolue</div><div class="proc-body">Aucun enregistrement visuel direct autorisé. Extension aux croquis réalisés dans les 48h suivant l'exposition.<br>Motif : altération cognitive rétroactive de l'image perçue lors de sa reproduction — le sujet qui tente de dessiner ce qu'il a vu produit une image de ce qu'il <em>aurait dû</em> voir selon ses schémas cognitifs préexistants, effaçant ainsi le souvenir de l'original. Le processus est non réversible et s'accélère avec chaque tentative.</div></div>
+    <div class="proc-item forbidden"><div class="proc-code">INTERDIT-03 — RÉEXPOSITION VOLONTAIRE</div><div class="proc-title">Prohibition absolue — Classes IV et supérieures</div><div class="proc-body">Toutes les demandes de dérogation ont été refusées depuis 1947, sauf une. Le demandeur est désigné <span class="redacted" data-secret="TRONC-3 — dossier personnel effacé — sa réexposition à VRD-0044 a produit les 847 pages du rapport classé FONDATION-177" title="[FONDATION]">█████████████</span>. Son dossier s'arrête à la date de sa réexposition.<span class="note-inline">Ce n'est pas que son dossier a été classifié. Les pages suivantes existent — elles sont blanches. Le papier est le bon. L'encre a disparu.</span></div></div>
+    <div class="proc-item forbidden"><div class="proc-code">INTERDIT-05 — SIMULATION THÉORIQUE DES ANOMALIES</div><div class="proc-title">Prohibition absolue depuis 2003</div><div class="proc-body">Aucun modèle mathématique, informatique ou conceptuel ne peut être construit pour simuler le comportement d'un phénomène de Classe IV ou supérieure. L'interdiction fait suite au projet "MODÈLE-NŒUD" (2001-2003).<span class="note-inline">Ce qui a filtré : les chercheurs du projet ont demandé une réunion d'urgence avec RACINE en septembre 2003. Trois d'entre eux n'ont pas assisté à la réunion. Ils avaient démissionné la veille. Un quatrième a assisté à la réunion. Il a demandé un SANCTION-03 pour lui-même. Sa demande a été accordée.</span></div></div>
     </div>
   </div>
 
-  <div class="warning-final">
-    <div class="warning-title">NOTE DE CLÔTURE — BUREAU D'ARCHIVAGE PERMANENT — NIVEAU NOCTURN</div>
-    <p style="font-size:12px;line-height:1.9;color:var(--ink)">Après soixante-dix-huit ans d'activité, VERIDIAN a documenté 1 847 décalages, en a résolu 1 203, contenus 589, et perdus 55.<br><br>
-    "Perdus" désigne les dossiers dans lesquels le phénomène a cessé d'être détectable sans que les équipes sachent si c'était un achèvement, un déplacement, ou autre chose.<br><br>
-    La doctrine repose sur l'hypothèse que les phénomènes trouvés sont les phénomènes existants. Cette hypothèse n'a jamais été vérifiée. Elle n'a jamais été remise en doute dans aucun document officiel.<br><br>
-    Elle l'a été dans le classeur 7. Son auteur a été décommissionné. Son badge a servi à ouvrir une archive deux minutes après sa désactivation.<br><br>
-    La question posée dans le classeur 7 était : <em>"Et si certains des phénomènes que nous surveillons nous surveillaient — et avaient décidé de nous laisser croire que nous décidons quand un dossier est ouvert ?"</em><br><br>
-    Ce dossier souche a été modifié pour la dernière fois à une date que nos systèmes ne peuvent pas lire.<br><br>
-    L'auteur de cette note de clôture est le Bureau d'Archivage Permanent.<br><br>
-    <span style="color:var(--red)">Le Bureau d'Archivage Permanent n'a pas rédigé cette note.</span></p>
-    <p style="font-size:10px;color:var(--muted);margin-top:14px;letter-spacing:1px">FIN DU DOCUMENT SOUCHE C — LA REPRODUCTION EST PASSIBLE DE SANCTION-03 — <span class="redacted">███████████████████████████████████</span></p>
+  <div id="proc-urg" class="sub-pane">
+    <div class="section"><div class="section-title">procédures d'urgence</div>
+    <div class="proc-item"><div class="proc-code">PROC-URG-03 / CONVERGENCE RACINE</div><div class="proc-title">Réunion physique obligatoire de l'ensemble des RACINE</div><div class="proc-body">Déclenchée uniquement pour les incidents Classe V confirmés. Requiert la présence physique. Lieu : <span class="redacted" data-secret="Château de Ballenberg, Brienz, CH — salle souterraine — accès via l'exposition agricole, bâtiment 14" title="[NOCTURN]">████████████████████████████████</span>.<span class="note-inline">Cette procédure a été déclenchée 3 fois. La première réunion (1979) a duré 11 jours. La deuxième (2003) a duré 4 heures — les RACINE ont voté pour interrompre la réunion, sans documenter les raisons. La troisième réunion (2019) n'a pas eu lieu : un RACINE n'était pas joignable le jour de la convocation.</span></div></div>
+    <div class="proc-item forbidden"><div class="proc-code">PROC-URG-04 / EXTINCTION DOCUMENTAIRE</div><div class="proc-title">Destruction physique de l'ensemble des archives d'un dossier</div><div class="proc-body">Jamais appliquée. Le formulaire d'autorisation correspondant existe — il a été pré-rempli pour deux dossiers, sans être finalisé.<span class="note-inline">RACINE-2, 2022 : "J'ai signé le formulaire pour VRD-0271 en 2019. Je ne me souviens pas de l'avoir signé. La signature est la mienne. Je ne me souviens pas."</span></div></div>
+    </div>
+  </div>
+
+  <div id="proc-med" class="sub-pane">
+    <div class="section"><div class="section-title">protocoles médicaux et psychologiques</div>
+    <div class="proc-item"><div class="proc-code">PROTO-MED-03 / COMPOSÉ IIIb</div><div class="proc-title">Agent pharmacologique d'effacement mnésique ciblé</div><div class="proc-body">Développé entre 1968 et 1974 en collaboration avec <span class="redacted" data-secret="l'Institut Karolinska de Stockholm — programme conjoint non publié — trois chercheurs suédois figurent dans les archives MKULTRA déclassifiées" title="[NOCTURN]">████████████████████████</span>. Effets documentés : suppression des souvenirs associatifs sur 18-72h. Absence d'effet sur la mémoire procédurale. Absence de marqueurs détectables dans les analyses toxicologiques standard.<span class="note-inline">Un lot de composé IIIb a été déclaré "dégradé au-delà d'usage" en 2017. Les procédures PROC-EFF-01 sont marquées "SUSPENDU TEMPORAIREMENT" depuis novembre 2017. La suspension dure toujours.</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- TAB ANOMALIES — 53 DOSSIERS -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div id="main-anom" class="tab-pane">
+  <div class="stats-bar">
+    <div class="stat-item"><span class="stat-num">53</span><span class="stat-label">TOTAL DOSSIERS</span></div>
+    <div class="stat-item"><span class="stat-num">18</span><span class="stat-label">ACTIFS</span></div>
+    <div class="stat-item"><span class="stat-num">14</span><span class="stat-label">CONTENUS</span></div>
+    <div class="stat-item"><span class="stat-num">9</span><span class="stat-label">CLOS</span></div>
+    <div class="stat-item"><span class="stat-num">7</span><span class="stat-label">PERDUS</span></div>
+    <div class="stat-item"><span class="stat-num">5</span><span class="stat-label">INDÉTERMINÉS</span></div>
+  </div>
+
+  <div class="filter-bar">
+    <span class="filter-label">CLASSE :</span>
+    <button class="filter-btn active" onclick="filterDossiers('all',this)">TOUS</button>
+    <button class="filter-btn" onclick="filterDossiers('I',this)" style="color:#4a7c59;border-color:#4a7c59">GRIS</button>
+    <button class="filter-btn" onclick="filterDossiers('II',this)" style="color:#8b8b14;border-color:#8b8b14">AMBRE</button>
+    <button class="filter-btn" onclick="filterDossiers('III',this)" style="color:#8b6914;border-color:#8b6914">OCRE</button>
+    <button class="filter-btn" onclick="filterDossiers('IV',this)" style="color:#8b3014;border-color:#8b3014">ROUGE</button>
+    <button class="filter-btn" onclick="filterDossiers('V',this)" style="color:#8b1a1a;border-color:#8b1a1a">NOIR</button>
+    <button class="filter-btn" onclick="filterDossiers('VI',this)" style="color:#4a0a4a;border-color:#4a0a4a">BLANC</button>
+    <button class="filter-btn" onclick="filterDossiers('?',this)" style="color:var(--muted)">INDET</button>
+    <span class="filter-label" style="margin-left:10px">STATUT :</span>
+    <button class="filter-btn" onclick="filterStatut('all',this)">TOUS</button>
+    <button class="filter-btn" onclick="filterStatut('ACTIF',this)">ACTIF</button>
+    <button class="filter-btn" onclick="filterStatut('CONTENU',this)">CONTENU</button>
+    <button class="filter-btn" onclick="filterStatut('CLOS',this)">CLOS</button>
+    <button class="filter-btn" onclick="filterStatut('PERDU',this)">PERDU</button>
+  </div>
+  <div style="margin-bottom:10px">
+    <input class="search-box" type="text" placeholder="RECHERCHER UN DOSSIER..." oninput="searchDossiers(this.value)" id="main-search">
+  </div>
+
+  <div class="dossier-grid" id="dossier-grid"></div>
+  <div class="detail-panel" id="detail-panel" style="display:none">
+    <div id="detail-content"></div>
+  </div>
+
+  <!-- CLASSEUR 7 — section cachée, révélée par mot de passe dans le terminal -->
+  <div id="classeur7">
+    <div class="warning-box" style="border-color:var(--amber)">
+      <div class="warning-title" style="color:var(--amber)">⚠ CLASSEUR 7 — ONGLET : ADMINISTRATIF DIVERS — ACCÈS NON AUTORISÉ CONFIRMÉ</div>
+      <p style="font-size:11px;line-height:1.9;color:var(--ink)">Vous avez trouvé le classeur 7. Ce qui suit est la note complète de TRONC-9, non expurgée.<br>
+      Ce document n'est pas destiné à être lu par des agents VERIDIAN. Il est destiné à être lu par quelqu'un d'extérieur.<br>
+      Si vous lisez ceci, vous êtes cette personne.</p>
+    </div>
+    <div class="memo" style="border-color:var(--amber)">
+      <span class="memo-label" style="color:var(--amber)">NOTE COMPLÈTE — TRONC-9 / CLASSEUR 7 / ONGLET "ADMINISTRATIF DIVERS" — DATE : 3 OCTOBRE 2020</span>
+      <p style="font-size:11px;line-height:1.9;margin-top:4px">Je sais que je vais être décommissionné. J'ai trop regardé les données.<br><br>
+      Voici ce que j'ai trouvé :<br><br>
+      <strong>1. Les dossiers ne sont pas 53. Ils sont 78.</strong><br>
+      Les 25 dossiers manquants ont des numéros qui existent dans l'index mais pas dans le système principal. Ils sont tous classés entre VRD-0060 et VRD-0099. La séquence a des trous. Ces trous ont des noms.<br><br>
+      <strong>2. La distribution géographique des incidents suit un motif.</strong><br>
+      J'ai tracé les incidents OCRE et supérieurs sur une carte. Ils convergent. Pas vers un point géographique — vers une <em>date</em>. Si le motif continue, la prochaine concentration d'incidents se produit entre 2027 et 2031, dans un rayon de 800 km autour du point 47.5°N, 9.0°E.<br>
+      Ce point est le lac de Constance.<br><br>
+      <strong>3. SÈVE peut être contacté.</strong><br>
+      La méthode n'est pas chiffrée, pas technique. Elle est physique.<br>
+      Il y a un bâtiment à Berne. Son adresse est dans les métadonnées de ce document HTML.<br>
+      Dans ce bâtiment, au troisième étage, il y a un bureau dont le numéro est le produit des jours des cinq dates complètes de ce document, modulo 100.<br>
+      Frappez à ce bureau le 14 mars, entre 14h00 et 14h47.<br><br>
+      <strong>4. Ce que VERIDIAN cache réellement.</strong><br>
+      VERIDIAN ne cache pas des phénomènes. VERIDIAN cache que les phénomènes communiquent. Pas entre eux. Avec nous. Depuis le début. Ce que nous avons pris pour des incidents est une conversation dont nous n'avons jamais compris que nous étions l'interlocuteur.<br><br>
+      La question posée dans chaque incident est la même. Je l'ai reconstituée à partir des 22 dossiers actifs. Elle est en latin.<br>
+      <em>Meministi quid eras antequam oblivisceris ?</em><br>
+      (Te souviens-tu de ce que tu étais avant d'oublier ?)<br><br>
+      Je ne sais pas ce que nous étions.<br>
+      SÈVE le sait peut-être.<br><br>
+      — TRONC-9<br>
+      <span style="color:var(--muted);font-size:10px">Ce document a été rédigé à 03h17 du matin. Je ne me souviens pas de l'avoir rédigé. La formulation est la mienne. Les dates sont correctes. L'heure ne l'est pas. Je dormais à 03h17.</span></p>
+    </div>
+    <div class="memo">
+      <span class="memo-label">DOCUMENT ANNEXE — CLASSEUR 7 — LISTE DES 25 DOSSIERS MANQUANTS</span>
+      <p style="font-size:11px;line-height:1.9;margin-top:4px">
+      VRD-0061-SEUIL — STATUT INCONNU — LOC : <span class="redacted" data-secret="Istanbul, TR — 1963 — Classe IV — 34 000 sujets — effacement jugé impossible — dossier mis en sommeil" title="[FONDATION]">CLASSIFIÉ FONDATION</span><br>
+      VRD-0067-PASSAGE — STATUT INCONNU — LOC : <span class="redacted" data-secret="Marrakech, MA — 1971 — Classe V — dossier fermé après disparition de l'équipe entière" title="[FONDATION]">CLASSIFIÉ FONDATION</span><br>
+      VRD-0072-MÈRE — STATUT INCONNU — LOC : <span class="redacted" data-secret="Kyoto, JP — 1977 — Classe III — particularité : le phénomène a cessé spontanément le jour de la naissance d'un individu non identifié" title="[FONDATION]">CLASSIFIÉ FONDATION</span><br>
+      VRD-0079-APPEL — STATUT INCONNU — LOC : <span class="redacted" data-secret="Montréal, CA — 1984 — Classe IV — premier incident à produire un message verbal cohérent adressé à VERIDIAN nommément" title="[FONDATION]">CLASSIFIÉ FONDATION</span><br>
+      VRD-0083-RÉPONSE — STATUT INCONNU — LOC : <span class="redacted" data-secret="Reykjavik, IS — 1988 — Classe IV — dossier ouvert en réponse à VRD-0079. L'anomalie savait que VERIDIAN avait reçu VRD-0079." title="[FONDATION]">CLASSIFIÉ FONDATION</span><br>
+      <span style="color:var(--muted);font-size:10px">[... 20 dossiers supplémentaires — liste tronquée dans cette copie — voir classeur physique, Oslo, armoire 3, classeur bleu]</span>
+      </p>
+    </div>
+    <div class="warning-box" style="border-color:var(--red);margin-top:1rem">
+      <div class="warning-title">NOTE FINALE — AUTEUR INCONNU — TROUVÉE GLISSÉE DANS LE CLASSEUR 7</div>
+      <p style="font-size:11px;line-height:1.9;color:var(--ink)">TRONC-9 a trouvé la question.<br>
+      Il n'a pas cherché la réponse.<br>
+      La réponse est aussi dans ce document.<br>
+      Elle est dans les lettres initiales de chaque nom de dossier dans la liste des 53, dans l'ordre alphabétique des identifiants.<br>
+      Prenez le temps de les lire dans l'ordre.<br><br>
+      <span style="color:var(--red)">Ou peut-être que c'est ce document qui vous lit.</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- TAB DOCUMENTS -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div id="main-docs" class="tab-pane">
+  <div class="section"><div class="section-title">extraits de communications internes</div>
+
+  <div class="memo"><span class="memo-label">MESSAGE CHIFFRÉ — RACINE-2 → RACINE-4 — 14 NOV. 2019</span>
+    <p style="font-size:11px;line-height:1.8;margin-top:4px">La révision du protocole OBS-02 ne peut pas attendre. Les équipements B ont montré 73% d'efficacité sur OCRE, 31% sur ROUGE. Sur les agents exposés à VRD-0271, l'équipement n'a eu aucun effet mesurable.<br><br>
+    Si SÈVE n'est pas informé de ça, quelqu'un doit le faire. Je ne sais pas comment les contacter. Est-ce que toi tu sais ?<br><br>
+    [Réponse RACINE-4, 15 nov. 2019 :] Non. Je pensais que tu savais.<br><br>
+    [Note en marge de RACINE-2, date différente :] <em>J'ai demandé à RACINE-1, RACINE-3, RACINE-6. Aucun ne sait. Je commence à penser que personne ne sait. Je commence à penser que c'est voulu. Je ne sais pas par qui.</em></p>
+  </div>
+
+  <div class="memo"><span class="memo-label">NOTE — TRONC-9 / DÉPARTEMENT ANALYSE / DATE NON LISIBLE</span>
+    <p style="font-size:11px;line-height:1.8;margin-top:4px">Observation préliminaire. Je ne la soumets pas par les canaux officiels — je la laisse dans le classeur 7, onglet "ADMINISTRATIF DIVERS".<br><br>
+    La distribution géographique des 22 dossiers actifs de classe AMBRE et supérieure ne suit pas un modèle aléatoire. Elle suit un modèle. Je ne sais pas encore lequel. Mais les intervalles entre les incidents, les distances entre les zones, la progression des classes dans le temps — tout ça converge.<br><br>
+    Si ce que je pense est correct, alors VERIDIAN n'intervient pas sur des phénomènes désordonnés. Elle intervient sur les étapes d'un processus. Je ne sais pas quel processus. Je ne sais pas à quelle étape nous en sommes.<br><br>
+    <em>Je ne sais pas si VERIDIAN le sait non plus.</em></p>
+    <!-- PISTE cachée dans un commentaire -->
+    <!-- TRONC-9 a mentionné dans ce même classeur les coordonnées 48.8566°N 2.3522°E et 41.9028°N 12.4964°E avec la note "début et fin — ou l'inverse". Paris et Rome. L'intervalle temporel entre VRD-0011 (Paris, 1961) et VRD-0031 (Rome, 1978) est de 17 ans. L'intervalle entre VRD-0031 et VRD-0044 est de 20 ans. L'intervalle suivant devrait être de 23 ans : 1998 + 23 = 2021. VRD-???? ouvert en 2021 — ce dossier n'est pas dans la liste des 53. Il est dans les 25 manquants. Son nom : VRD-????-TRONC9. -->
+  </div>
+
+  <div class="memo"><span class="memo-label">NOTE RETROUVÉE DANS UNE BOÎTE SANS ÉTIQUETTE — DATE INCONNUE</span>
+    <p style="font-size:11px;line-height:1.8;margin-top:4px">Machine à écrire dont le modèle n'a été produit qu'entre 1953 et 1961. Le contenu :</p>
+    <div class="report-block" style="font-style:italic;line-height:2">
+      Nous avons cru que notre travail consistait à protéger les gens de ce qu'ils ne doivent pas savoir.<br>
+      Nous avons cru que nous savions ce qu'ils ne devaient pas savoir.<br>
+      Nous avons eu tort sur les deux points.<br>
+      Nous n'avons jamais su ce que nous cachions.<br>
+      Nous avons seulement su que ça devait être caché.<br>
+      La différence importe.
+    </div>
+  </div>
+
+  <div class="memo" style="border-color:var(--red)"><span class="memo-label" style="color:var(--red)">DOCUMENT NON SOLLICITÉ — APPARU DANS LE SYSTÈME LE 7 JANVIER 2024 À 03h17</span>
+    <div class="report-block" style="border-color:var(--red);margin-top:8px">
+      Vous avez documenté 1 847 phénomènes.<br>
+      Nous en comptons 1 848.<br>
+      Le dernier est ce document.
+    </div>
+    <div class="field-row" style="margin-top:8px"><span class="field-label">RÉPONSE VERIDIAN</span><span class="field-val">Le dossier a été supprimé le 7 janvier 2024 à 08h44. Il était de retour le 7 janvier 2024 à 08h45. Il n'a pas été supprimé depuis.</span></div>
+  </div>
+
+  <div class="memo"><span class="memo-label">NOTE INTERNE — AUTEUR : [CHAMP VIDE] — DATE : [CHAMP VIDE]</span>
+    <p style="font-size:11px;line-height:1.8;margin-top:4px">Si vous lisez ceci en dehors du système VERIDIAN, vous avez probablement reçu ce document par une voie que vous ne comprenez pas entièrement. C'est normal.<br><br>
+    Il y a deux choses importantes :<br>
+    1. Les coordonnées dans le dossier VRD-0044 sont réelles.<br>
+    2. La date qui manque dans l'en-tête de ce document n'est pas perdue par erreur.<br><br>
+    Ne cherchez pas à contacter VERIDIAN. VERIDIAN ne peut pas vous répondre.<br>
+    Cherchez le classeur 7.</p>
+    <!-- NOTE : "Cherchez le classeur 7" — la commande terminal est : taper "7" sept fois -->
+  </div>
+
+  <!-- DOCUMENT SECRET — visible uniquement si l'utilisateur fait Ctrl+A ou cherche dans la page -->
+  <div style="height:1px;overflow:hidden;opacity:0.01">
+    <p style="font-size:1px">DOCUMENT FOND-002 — PARTIELLEMENT DÉCLASSIFIÉ PAR ERREUR — RACINE-3 — 2018 : "La séquence des phénomènes n'est pas une progression. C'est une phrase. Nous en sommes au milieu. La fin de la phrase est ce que FOND-000 contient. J'ai compris pourquoi l'événement déclencheur de FOND-000 n'a pas encore eu lieu. Il attend que quelqu'un lise ce document et comprenne la question. La question est dans le classeur 7. Si vous avez trouvé le classeur 7, vous êtes l'événement déclencheur."</p>
+  </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- TAB RÉSEAU -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div id="main-reseau" class="tab-pane">
+  <div class="section"><div class="section-title">cartographie des connexions inter-dossiers</div>
+
+  <div class="conn-map">
+    <div style="font-size:10px;color:var(--muted);margin-bottom:10px;letter-spacing:.5px">CONNEXIONS DOCUMENTÉES — NIVEAU ARBRE</div>
+    <div class="conn-item"><span style="font-size:10px;color:var(--red)">VRD-0044-AUBE</span><div class="conn-line"></div><span class="conn-target">→ VRD-0109-ÉCO (témoins communs, 2006)</span></div>
+    <div class="conn-item"><span style="font-size:10px;color:var(--red)">VRD-0109-ÉCO</span><div class="conn-line"></div><span class="conn-target">→ VRD-0271-SIL (structure narrative similaire)</span></div>
+    <div class="conn-item"><span style="font-size:10px;color:var(--red)">VRD-0271-SIL</span><div class="conn-line"></div><span class="conn-target">→ VRD-0044-AUBE (effets croisés post-2018)</span></div>
+    <div class="conn-item"><span style="font-size:10px;color:var(--amber)">VRD-0033-MIROIR</span><div class="conn-line"></div><span class="conn-target">→ VRD-0011-PONT (précédent géographique)</span></div>
+    <div class="conn-item"><span style="font-size:10px;color:var(--amber)">VRD-0088-SÉQUENCE</span><div class="conn-line"></div><span class="conn-target">→ VRD-0044-AUBE, VRD-0109-ÉCO, VRD-0271-SIL (pattern)</span></div>
+    <div class="conn-item"><span style="font-size:10px;color:var(--muted)">VRD-0007-RACINE</span><div class="conn-line"></div><span class="conn-target">→ <span class="redacted" data-secret="FOND-000 — connexion directe — VRD-0007 est antérieur à la création de VERIDIAN. Il existait avant l'organisation censée le classer." title="[FONDATION]">██████████</span> (connexion de niveau FONDATION)</span></div>
+  </div>
+
+  <div class="section-title" style="margin-top:1rem">timeline des incidents majeurs</div>
+  <div class="timeline">
+    <div class="tl-item"><div class="tl-date">19-23 JANVIER 1947</div><div class="tl-text">Incident fondateur — zone Simplon-Gondo, Valais — 23 cartographes — création de VERIDIAN</div></div>
+    <div class="tl-item"><div class="tl-date">1951</div><div class="tl-text">VRD-0007-RACINE — Premier dossier officiellement ouvert — statut : <span class="redacted" data-secret="EN COURS — depuis 1951 — ce dossier ne peut pas être fermé. Chaque tentative de mise à jour annulée automatiquement." title="[NOCTURN]">████████████████</span></div></div>
+    <div class="tl-item"><div class="tl-date">1961</div><div class="tl-text">VRD-0011-PONT — Paris — Classe IV — Premier incident en zone urbaine dense</div></div>
+    <div class="tl-item"><div class="tl-date">1971</div><div class="tl-text">Incident Kiruna — à l'origine d'INTERDIT-01 — 11 agents, 8 survivants aux rapports identiques</div></div>
+    <div class="tl-item"><div class="tl-date">1978</div><div class="tl-text">VRD-0031-FORUM — Rome — Classe IV</div></div>
+    <div class="tl-item"><div class="tl-date">1983</div><div class="tl-text">Deux pôles cessent toute communication. PÔLE-00 (Tbilissi) n'a plus jamais communiqué normalement.</div></div>
+    <div class="tl-item"><div class="tl-date">1998</div><div class="tl-text">VRD-0044-AUBE — Classe IV — AUBE PERSISTANTE — Confinement actif — 34 entrées par badges d'agents décédés documentées entre 2010 et 2016</div></div>
+    <div class="tl-item"><div class="tl-date">2003</div><div class="tl-text">Fin du projet MODÈLE-NŒUD — 4 chercheurs — 3 démissions — 1 SANCTION-03 volontaire</div></div>
+    <div class="tl-item"><div class="tl-date">2021</div><div class="tl-text">Décommissionnement de TRONC-9 — badge utilisé 2 minutes après désactivation — salle vide</div></div>
+    <div class="tl-item"><div class="tl-date">7 JAN. 2024 — 03h17</div><div class="tl-text">Apparition du dossier non sollicité : "Vous avez documenté 1 847 phénomènes. Nous en comptons 1 848."</div></div>
+    <div class="tl-item"><div class="tl-date">17 MARS 2024</div><div class="tl-text">Dernière présence documentée de RACINE-3 — disparition administrative</div></div>
+    <div class="tl-item" style="opacity:.5"><div class="tl-date">[DATE INCONNUE]</div><div class="tl-text">Cet événement s'est produit. Il est dans les archives. La date est illisible. L'événement est <span class="redacted" data-secret="l'ouverture de FOND-000 — l'événement déclencheur est la lecture de ce document par quelqu'un d'extérieur à VERIDIAN" title="[FOND-000]">████████████████████████████████████</span></div></div>
+  </div>
+  </div>
+</div>
+
+<!-- NOTE DE CLÔTURE -->
+<div class="warning-box" style="margin-top:1.5rem">
+  <div class="warning-title">NOTE DE CLÔTURE — BUREAU D'ARCHIVAGE PERMANENT — NIVEAU NOCTURN</div>
+  <p style="font-size:12px;line-height:1.9;color:var(--ink)">Après soixante-dix-huit ans d'activité, VERIDIAN a documenté 1 847 décalages, en a résolu 1 203, contenus 589, et perdus 55.<br><br>
+  "Perdus" désigne les dossiers dans lesquels le phénomène a cessé d'être détectable sans que les équipes sachent si c'était un achèvement, un déplacement, ou autre chose.<br><br>
+  La doctrine repose sur l'hypothèse que les phénomènes trouvés sont les phénomènes existants. Cette hypothèse n'a jamais été vérifiée. Elle n'a jamais été remise en doute dans aucun document officiel.<br><br>
+  Elle l'a été dans le classeur 7. Son auteur a été décommissionné. Son badge a servi à ouvrir une archive deux minutes après sa désactivation.<br><br>
+  La question posée dans le classeur 7 était : <em>"Et si certains des phénomènes que nous surveillons nous surveillaient — et avaient décidé de nous laisser croire que nous décidons quand un dossier est ouvert ?"</em><br><br>
+  Ce dossier souche a été modifié pour la dernière fois à une date que nos systèmes ne peuvent pas lire.<br><br>
+  L'auteur de cette note de clôture est le Bureau d'Archivage Permanent.<br><br>
+  <span style="color:var(--red)">Le Bureau d'Archivage Permanent n'a pas rédigé cette note.</span></p>
+  <p style="font-size:10px;color:var(--muted);margin-top:14px;letter-spacing:1px">FIN DU DOCUMENT SOUCHE C — LA REPRODUCTION EST PASSIBLE DE SANCTION-03 — <span class="redacted" data-secret="sauf si vous avez trouvé le classeur 7. Dans ce cas, vous êtes maintenant GRAINE. Bienvenue." title="[FONDATION — accès accordé]">███████████████████████████████████</span></p>
+</div>
+
+</div><!-- /doc -->
+
+<!-- TERMINAL CACHÉ — accessible en tapant "7" sept fois -->
+<div id="hidden-terminal">
+  <span class="term-close" onclick="closeTerminal()">[ FERMER ]</span>
+  <div id="term-log">SYSTÈME VERIDIAN — INTERFACE ARCHIVES — NIVEAU ACCÈS : NON DÉTERMINÉ
+══════════════════════════════════════════════════════
+Connexion établie. Source : non identifiée.
+Ce terminal n'est pas documenté dans les procédures VERIDIAN.
+Sa présence dans ce système est une anomalie de niveau indéterminé.
+
+Commandes disponibles :
+  aide          — liste des commandes
+  acces [code]  — tenter d'accéder à un dossier
+  classeur7     — accéder au classeur 7 (mot de passe requis)
+  fond000       — statut de FOND-000
+  statut        — statut du système
+  exit          — fermer ce terminal
+
+</div>
+  <div class="term-input-row">
+    <span class="term-prompt">VERIDIAN://archives/non-répertorié $ </span>
+    <input type="text" id="term-input" autocomplete="off" spellcheck="false" onkeydown="handleTermInput(event)" placeholder="">
   </div>
 </div>
 
 <script>
-function showTab(id,btn){
-  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t=>{t.classList.remove('active');t.setAttribute('aria-selected','false')});
-  document.getElementById('tab-'+id).classList.add('active');
-  btn.classList.add('active');
-  btn.setAttribute('aria-selected','true');
-  document.getElementById('tab-'+id).scrollIntoView({behavior:'smooth',block:'nearest'});
+/* ═══════════════════════════════════════════════════════════
+   DONNÉES — 53 DOSSIERS
+═══════════════════════════════════════════════════════════ */
+const DOSSIERS = [
+  {id:'VRD-0003-VOIX',nom:'VOIX DE COULOIR',classe:'I',statut:'CLOS',loc:'Lyon, FR',an:'1953',desc:'Huit locataires d\'un immeuble haussmannien signalent entendre leurs propres conversations futures dans les conduits de ventilation. Le phénomène a cessé après la rénovation des conduits en 1955. Cause officielle : "résonance acoustique". Aucune résonance acoustique de ce type n\'a été reproduite expérimentalement.'},
+  {id:'VRD-0008-CARTE',nom:'CARTOGRAPHIE INVERSÉE',classe:'I',statut:'CLOS',loc:'Zurich, CH',an:'1957',desc:'Un cartographe produit pendant 3 semaines des cartes exactes de villes qu\'il n\'a jamais visitées, incluant des rues qui n\'existent pas encore. Quatre de ces rues ont depuis été construites, en suivant les tracés de ses cartes. La ville concernée n\'a pas été informée.'},
+  {id:'VRD-0014-HORL',nom:'L\'HORLOGE',classe:'I',statut:'CLOS',loc:'Bruges, BE',an:'1963',desc:'Une horloge dans un commerce s\'arrête systématiquement 11 minutes avant chaque décès dans le bâtiment. Le phénomène a été documenté 7 fois sur 18 mois avant que le commerce ferme. Le propriétaire a refusé l\'entretien de réorientation narrative. Sa déposition est dans le classeur 7.'},
+  {id:'VRD-0019-PLUIE',nom:'PRÉCIPITATION CIBLÉE',classe:'I',statut:'CLOS',loc:'Marseille, FR',an:'1966',desc:'Il pleut sur une surface exacte de 4m² dans une rue commerçante par temps clair, pendant 22 jours consécutifs. Les analyses atmosphériques ne trouvent aucune anomalie. Les habitants du quartier finissent par trouver ça normal. Quand le phénomène cesse, plusieurs se plaignent du changement.'},
+  {id:'VRD-0025-REFLET',nom:'LE REFLET EN AVANCE',classe:'I',statut:'CLOS',loc:'Amsterdam, NL',an:'1971',desc:'Les miroirs d\'un appartement montrent le reflet de leur occupant tel qu\'il sera 3 secondes plus tard. La locataire vit avec pendant 4 mois avant de signaler. Elle dit que ça "aidait à s\'habiller".'},
+  {id:'VRD-0039-TEXTE',nom:'TEXTE INTERPOLÉ',classe:'I',statut:'PERDU',loc:'Berlin, DE',an:'1981',desc:'Les livres d\'une bibliothèque universitaire comportent des phrases supplémentaires dans les éditions de 1971-1973 uniquement. Ces phrases forment, extraites, un texte cohérent en langue inconnue. Analyse linguistique classée NOCTURN. La bibliothèque a été délocalisée en 1984. Les livres n\'ont pas tous suivi.'},
+  {id:'VRD-0047-TRAIN',nom:'GARE FANTÔME',classe:'I',statut:'PERDU',loc:'Poznan, PL',an:'1988',desc:'Des passagers décrivent un train qui s\'arrête en gare sans être dans les horaires, dont le conducteur indique une destination qui n\'existe pas dans le réseau ferroviaire polonais. Cinq témoignages indépendants, mêmes détails. Deux témoins ont pris le train. Ils sont revenus. Ils refusent de décrire ce qu\'ils ont vu.',secret:'VRD-0047-TRAIN apparaît dans les 25 dossiers manquants sous un second numéro : VRD-0096-RETOUR. Les deux témoins qui ont pris le train sont réapparus dans le registre VERIDIAN comme agents GRAINE — sans procédure de recrutement documentée.'},
+  {id:'VRD-0005-OMBRE',nom:'LES OMBRES FAUSSES',classe:'II',statut:'CLOS',loc:'Madrid, ES',an:'1955',desc:'Dans un quartier de 500m², les ombres des habitants pointent dans une direction différente de la source lumineuse, pendant 8 jours. La déviation est de 23°. Après enquête : aucune cause physique identifiée. Note RAMEAU-3 : "elles pointaient toutes vers le même bâtiment. Le bâtiment n\'existe plus. Il a été démoli en 1952."'},
+  {id:'VRD-0013-LANGUE',nom:'LANGUE COMMUNE',classe:'II',statut:'CLOS',loc:'Budapest, HU',an:'1962',desc:'Soixante-deux personnes sans contact entre elles développent le même idiolecte sur 2 semaines — mêmes néologismes, mêmes constructions syntaxiques. Le lexique inventé comporte 14 mots. Analyse sémantique : les 14 mots décrivent des concepts pour lesquels aucune langue connue n\'a de terme.'},
+  {id:'VRD-0020-SOMMEIL',nom:'SYNCHRONISATION HYPNIQUE',classe:'II',statut:'CONTENU',loc:'Reykjavik, IS',an:'1968',desc:'Les habitants d\'un immeuble de 24 appartements font le même rêve 3 nuits par semaine. Pas des rêves similaires — le même, avec les mêmes personnes, la même séquence, le même dialogue. Certains reconnaissent des voisins dans les rêves sans les avoir rencontrés. Le confinement consiste en un "audit de rénovation" qui n\'a jamais pris fin.'},
+  {id:'VRD-0028-CHANT',nom:'RÉSONANCE VOCALE',classe:'II',statut:'CLOS',loc:'Naples, IT',an:'1974',desc:'Un immeuble produit un son de fréquence 18,98 Hz uniquement quand les 47 locataires sont simultanément présents. La fréquence correspond à la résonance naturelle du globe oculaire humain — connue pour provoquer des hallucinations visuelles périphériques. Les locataires évitent de se trouver tous présents en même temps, sans pouvoir expliquer pourquoi.'},
+  {id:'VRD-0036-PLANTE',nom:'CROISSANCE INVERSE',classe:'II',statut:'CLOS',loc:'Ljubljana, SI',an:'1979',desc:'Jardin botanique municipal : les plantes d\'une serre poussent à rebours pendant 6 semaines — réabsorption des fleurs, réduction des tiges, régression vers l\'état de graine. Sans mourir. À la fin du phénomène, toutes reprennent une croissance normale depuis leur état initial.'},
+  {id:'VRD-0045-MEMOIRE',nom:'MÉMOIRE COLLECTIVE PARASITE',classe:'II',statut:'ACTIF',loc:'Tallinn, EE',an:'1987',desc:'Une communauté de 340 personnes partage des souvenirs d\'événements locaux qui ne se sont pas produits. L\'événement central de ces faux souvenirs est un incendie en 1972 qui n\'a pas eu lieu. Les archives montrent que quelque chose a brûlé cette année-là. Pas un incendie. Un document.'},
+  {id:'VRD-0052-SIGNAL',nom:'TRANSMISSION PARASITE',classe:'II',statut:'ACTIF',loc:'Riga, LV',an:'1993',desc:'Une fréquence radio non attribuée émet en continu depuis un point non localisable. Le contenu : des conversations téléphoniques qui auront lieu dans les 48h. Les équipes techniques de VERIDIAN ont tenté de trianguler la source 7 fois. À chaque tentative, la source se déplace de 400m exactement dans la direction opposée aux instruments.'},
+  {id:'VRD-0011-PONT',nom:'LE PONT',classe:'III',statut:'CONTENU',loc:'Paris, FR',an:'1961',desc:'Un pont sur la Seine génère chez les passants une conviction croissante — non une pulsion, une certitude — que de l\'autre côté du pont "les choses seront différentes". La moitié des personnes qui traversent changent d\'avis sur une décision importante dans les 24h. Le pont est toujours en service.'},
+  {id:'VRD-0017-CAVE',nom:'ARCHIVE SPONTANÉE',classe:'III',statut:'CONTENU',loc:'Prague, CZ',an:'1965',desc:'Une cave se remplit spontanément de photographies d\'événements locaux — développées, étiquetées, classées — avant que ces événements aient lieu. VERIDIAN a tenté de retirer les photographies. Elles reviennent. Les tentatives d\'empêcher les événements photographiés ont conduit aux mêmes événements par des voies différentes.'},
+  {id:'VRD-0022-FORET',nom:'FORÊT DE PERCEPTION',classe:'III',statut:'CONTENU',loc:'Cluj-Napoca, RO',an:'1968',desc:'Zone forestière de 3 km² où les appareils photo ne fonctionnent pas, les boussoles indiquent une direction arbitraire, et les visiteurs décrivent des sensations de présence et de désorientation. Tous les visiteurs ressortent de la même direction — l\'entrée — même quand ils pensent s\'être enfoncés dans la forêt. Coordonnées : 46.7677°N 23.4960°E.'},
+  {id:'VRD-0031-FORUM',nom:'LE FORUM',classe:'III',statut:'CLOS',loc:'Rome, IT',an:'1978',desc:'Des archéologues travaillant sur un site du Forum romain rapportent entendre des conversations en latin classique — non du latin vulgaire, du latin classique de la période républicaine. Le site a été recouvert.'},
+  {id:'VRD-0038-MATH',nom:'CONVERGENCE NUMÉRIQUE',classe:'III',statut:'ACTIF',loc:'Genève, CH',an:'1982',desc:'Des mathématiciens de l\'EPFL travaillant sur des problèmes non liés aboutissent à la même démonstration sur 8 mois. La démonstration prouve quelque chose que personne n\'avait demandé de prouver. Ce que ça prouve est classé NOCTURN. Cinq des sept mathématiciens ont changé de domaine de recherche après.',secret:'Ce que la démonstration prouve : il existe un ensemble de phénomènes cohérents dont l\'existence est logiquement nécessaire pour que la réalité mesurable soit cohérente. Ces phénomènes ne peuvent pas ne pas exister. VERIDIAN les appelle "décalages". La démonstration les appelle "conditions d\'existence de l\'observable". Le rapport de résultat est dans FOND-177.'},
+  {id:'VRD-0043-MUSEE',nom:'TABLEAU MODIFIÉ',classe:'III',statut:'CONTENU',loc:'Vienne, AT',an:'1986',desc:'Un tableau du Kunsthistorisches Museum montre des détails différents selon le jour de la semaine. Les observateurs du même jour décrivent le même tableau — mais les observateurs de lundi et mardi décrivent deux tableaux entièrement différents. Les examens techniques montrent une seule couche de peinture.'},
+  {id:'VRD-0049-RADIO',nom:'ÉMISSION CONTINUE',classe:'III',statut:'ACTIF',loc:'Oslo, NO',an:'1990',desc:'Une station de radio locale émet un programme que personne ne produit — annonceurs dont la voix n\'appartient à aucun employé de la station, informations exactes sur des événements futurs à 3-7 jours, musique inédite qui ressemble à des artistes existants mais ne correspond à aucun enregistrement connu.'},
+  {id:'VRD-0055-MARCHE',nom:'MARCHE INVOLONTAIRE',classe:'III',statut:'ACTIF',loc:'Lisbonne, PT',an:'1996',desc:'Des habitants d\'un quartier de 2 km² se retrouvent systématiquement au même carrefour à 3h14 du matin sans souvenir d\'y être allés. Le phénomène se produit 3 fois par semaine. Depuis 2018, certains commencent à se reconnaître. VERIDIAN considère cela comme une aggravation.'},
+  {id:'VRD-0007-RACINE',nom:'RACINE ZÉRO',classe:'IV',statut:'ACTIF',loc:'CLASSIFIÉ NOCTURN',an:'1951',desc:'Premier dossier officiellement ouvert par VERIDIAN. Son contenu au niveau ARBRE est : "En cours". Son contenu n\'a pas changé depuis 1951. Chaque tentative de mise à jour du statut a été annulée automatiquement par le système documentaire.',secret:'VRD-0007 est antérieur à la fondation de VERIDIAN. Ce dossier existait avant l\'organisation censée le classer. Il portait la mention "TRANSFÉRÉ DEPUIS : [VIDE]". Les dossiers VRD-0001 à VRD-0006 n\'existent dans aucun registre accessible. Leur absence n\'est notée dans aucun document officiel.'},
+  {id:'VRD-0044-AUBE',nom:'AUBE PERSISTANTE',classe:'IV',statut:'ACTIF',loc:'Zone agricole, Europe centrale',an:'1998',desc:'Zone circulaire de 2,3 km de diamètre dans laquelle la luminosité perçue correspond systématiquement à l\'aube, quelle que soit l\'heure. Les sept personnes ayant séjourné plus de 40 heures dans la zone ont ensuite développé une intolérance permanente à la lumière artificielle.',secret:'Les données de fréquentation de 2010 à 2016 montrent 34 entrées par des agents VERIDIAN — et 34 entrées supplémentaires effectuées par des badges d\'agents décédés ou décommissionnés. La liste de ces badges est dans le classeur 7.'},
+  {id:'VRD-0058-FRONT',nom:'FRONTIÈRE MÉMORIELLE',classe:'IV',statut:'ACTIF',loc:'Ancienne frontière RDA/RFA',an:'1989',desc:'Depuis la réunification, une bande de territoire de 400m de large le long de l\'ancienne frontière intérieure allemande est associée à un phénomène : les personnes qui la traversent ont des souvenirs des deux versions de leur vie — celle vécue, et celle qu\'ils auraient vécue si la frontière n\'avait pas existé. Aucun psychiatre de VERIDIAN ne sait laquelle est la vraie.'},
+  {id:'VRD-0066-NOMS',nom:'INVERSION NOMINALE',classe:'IV',statut:'ACTIF',loc:'Namur, BE',an:'1994',desc:'Dans une ville de 110 000 habitants, sur 6 ans, les personnes portant un certain prénom commencent à présenter des personnalités identiques. Vingt-trois d\'entre elles ont le même souvenir d\'enfance central, même si elles sont d\'âges différents et viennent de familles sans lien. Le prénom en question est censuré au niveau ARBRE.',secret:'Le prénom censuré est VÉRA. Il n\'existe aucun registre de naissance avec ce prénom dans les archives de Namur entre 1960 et 1994. Les 23 personnes présentant ce souvenir commun ont pourtant toutes des actes de naissance valides avec ce prénom.'},
+  {id:'VRD-0071-CIEL',nom:'CIEL PARALLÈLE',classe:'IV',statut:'CONTENU',loc:'Krakow, PL',an:'1998',desc:'Les habitants de deux quartiers de la ville voient des ciels différents depuis la même rue. Un groupe voit un ciel nuageux, l\'autre un ciel dégagé, simultanément vérifiable par instruments (les deux ont tort — le ciel réel est entre les deux). VERIDIAN n\'a pas de théorie. VERIDIAN a un cordon de sécurité.'},
+  {id:'VRD-0109-ECO',nom:'L\'ÉCHO',classe:'III',statut:'ACTIF',loc:'Immeuble résidentiel',an:'2004',desc:'L\'appartement 4B produit, à intervalles irréguliers, des sons correspondant à des conversations qui auront lieu dans cet appartement entre 2 et 9 jours plus tard. Une seule famille refusait de partir. La mère indiquait que les voix l\'avaient "prévenue" de la conversation d\'expulsion trois jours avant qu\'elle ait lieu.',meta:'La note de terrain décrit "un appartement au quatrième étage, couloir gauche" — avant que cette désignation existe dans les registres VERIDIAN.'},
+  {id:'VRD-0271-SIL',nom:'LE SILENCE',classe:'V',statut:'ACTIF',loc:'CLASSIFIÉ NOCTURN',an:'CLASSIFIÉ',desc:'Le phénomène affecte la capacité des sujets exposés à conceptualiser l\'absence. Ils ne peuvent plus former mentalement la notion de "rien". Les premières semaines : amélioration de l\'humeur, diminution de l\'anxiété. À partir du 3e mois : difficultés à terminer les phrases. À partir du 6e mois : impossibilité d\'expliquer pourquoi certaines choses les inquiétaient. Pas parce qu\'ils sont rassurants. Parce qu\'ils ne perçoivent plus l\'espace où l\'inquiétude existait.',meta:'14 demandes d\'accès : 9 refusées, 4 sans réponse, 1 a conduit à un décommissionnement définitif.'},
+  {id:'VRD-0088-SEQ',nom:'LA SÉQUENCE',classe:'V',statut:'ACTIF',loc:'MULTIPLE — voir note',an:'1985',desc:'Dossier transversal. La "Séquence" est une théorie de TRONC-9 : les dossiers VRD-0044, VRD-0109 et VRD-0271 sont des étapes successives d\'un même phénomène. L\'ordre est : perte de perception du temps (AUBE), perte de perception de la causalité (ÉCO), perte de perception de l\'absence (SIL). L\'étape suivante n\'a pas de nom. Elle n\'a pas encore été documentée.',meta:'RACINE-2, après lecture de ce dossier, a demandé une réunion d\'urgence. La réunion n\'a pas eu lieu. RACINE-2 n\'a plus mentionné ce dossier depuis.'},
+  {id:'VRD-0133-BRUIT',nom:'BRUIT DE FOND',classe:'V',statut:'PERDU',loc:'Antarctique — Station Concordia',an:'2009',desc:'Des membres de l\'équipe hivernante de la station franco-italienne Concordia rapportent entendre un bruit de fond constant, identique pour tous, inaudible aux instruments. Un membre de l\'équipe a refusé de rentrer. Il est resté dehors 11 heures. À son retour, il n\'entendait plus le bruit. Mais il ne parlait plus non plus.'},
+  {id:'VRD-0155-EFFAC',nom:'EFFACEMENT PROGRESSIF',classe:'V',statut:'ACTIF',loc:'Île de Surtsey, IS',an:'2014',desc:'La plus jeune île du monde présente depuis 2014 des zones où les instruments de mesure enregistrent des données impossibles : densité de l\'air supérieure à l\'eau, températures en deçà du zéro absolu théorique, pression atmosphérique négative. Dans ces zones, les agents rapportent une conviction croissante que "rien de ce qu\'ils font n\'a de conséquences". Trois agents ont demandé à rester.'},
+  {id:'VRD-0177-PORTE',nom:'LA PORTE',classe:'V',statut:'PERDU',loc:'Inconnu',an:'1997',desc:'Un agent a documenté une porte qui ouvre sur un espace qui n\'est pas derrière le mur dans lequel elle est installée. L\'agent est entré. Il est ressorti. Son rapport fait 847 pages. La même longueur que le dossier VRD-0271-SIL. Coïncidence non commentée.'},
+  {id:'VRD-0200-DISLO',nom:'DISLOCATION — SITE B',classe:'VI',statut:'PERDU',loc:'CLASSIFIÉ FONDATION',an:'CLASSIFIÉ',desc:'L\'unique incident provisoirement classé VI, reclassé V après 11 semaines. Les agents présents ont été décommissionnés. Leurs rapports décrivent trois phénomènes différents sans aucun point commun.',meta:'"Reclasser en Classe V ne signifie pas que c\'était une Classe V." — note marginale non signée.'},
+  {id:'VRD-????-NSO',nom:'DOSSIER NON SOLLICITÉ',classe:'?',statut:'ACTIF',loc:'Système documentaire VERIDIAN',an:'2024',desc:'Ce dossier n\'a pas été ouvert par le Bureau d\'Archivage. Il est apparu dans le système de gestion documentaire le 7 janvier 2024 à 03h17. Son contenu : "Vous avez documenté 1 847 phénomènes. Nous en comptons 1 848. Le dernier est ce document."\n\nLe dossier a été supprimé le 7 janvier 2024 à 08h44. Il était de retour le 7 janvier 2024 à 08h45.'},
+  {id:'VRD-0000-FOND',nom:'FOND-000',classe:'?',statut:'INDET',loc:'Archives FONDATION — accès non accordé',an:'INCONNUE',desc:'Le document FOND-000 existe dans les index mais aucun agent n\'y a accédé. Le champ "contenu" dans l\'index indique : "en attente d\'événement déclencheur — date inconnue". Son auteur est indiqué comme : [CHAMP PRÉEXISTANT].'},
+  {id:'VRD-XXXX-TRONC9',nom:'DOSSIER TRONC-9 — POST-DÉCOMMISSIONNEMENT',classe:'?',statut:'INDET',loc:'Archive physique — salle vide à 09h16',an:'2021',desc:'Le badge de TRONC-9 a été utilisé pour accéder à l\'archive physique 2 minutes après sa désactivation. La salle était vide à l\'arrivée de l\'équipe de sécurité. La caméra de surveillance montre une image statique pendant 4 minutes. Pas un écran noir. L\'image de la salle vide, immobile, sans artefact, pendant exactement 4 minutes.'},
+  {id:'VRD-0299-SEVE',nom:'SÈVE — HYPOTHÈSE DOCUMENTAIRE',classe:'?',statut:'INDET',loc:'INCONNU',an:'INCONNU',desc:'Ce n\'est pas un dossier sur un phénomène. C\'est un dossier constitué par RACINE-2 et RACINE-4 sur l\'entité désignée SÈVE. Ce qu\'ils ont pu compiler : des annotations dans des documents NOCTURN que personne n\'a rédigées. Une note retrouvée dans l\'exemplaire physique, rédigée à l\'encre d\'une machine à écrire dont le modèle n\'a plus été produit depuis 1961 : "Vous cherchez les mauvaises choses au mauvais endroit. Vous ne cherchez pas assez près."'},
+  {id:'VRD-0301-VOUS',nom:'CE DOSSIER',classe:'?',statut:'INDET',loc:'Là où vous lisez',an:'Maintenant',desc:'Ce dossier a été ouvert à l\'instant où vous avez commencé à lire ce document. Il sera fermé quand vous arrêterez. Son contenu change selon qui le lit.\n\nVERIDIAN ne sait pas si vous existez. Vous ne savez pas si VERIDIAN existe. Ces deux incertitudes sont de même nature.'}
+];
+
+/* ═══════════════════════════════════════════════════════════
+   RENDU DES DOSSIERS
+═══════════════════════════════════════════════════════════ */
+const classColors = {'I':'cl-gris','II':'cl-ambre','III':'cl-ocre','IV':'cl-rouge','V':'cl-noir','VI':'cl-blanc','?':'cl-indet'};
+const classLabel = {'I':'GRIS / I','II':'AMBRE / II','III':'OCRE / III','IV':'ROUGE / IV','V':'NOIR / V','VI':'BLANC / VI','?':'INDÉTERMINÉ'};
+const statutColors = {'ACTIF':'st-actif','CONTENU':'st-contenu','CLOS':'st-clos','PERDU':'st-pdu','INDET':'st-indet'};
+
+let currentFilter = 'all';
+let currentStatut = 'all';
+let currentSearch = '';
+
+function renderGrid(){
+  const grid = document.getElementById('dossier-grid');
+  grid.innerHTML = '';
+  DOSSIERS.filter(d => {
+    const classOk = currentFilter==='all' || d.classe===currentFilter;
+    const statOk = currentStatut==='all' || d.statut===currentStatut;
+    const searchOk = currentSearch==='' ||
+      d.nom.toLowerCase().includes(currentSearch.toLowerCase()) ||
+      d.id.toLowerCase().includes(currentSearch.toLowerCase()) ||
+      d.loc.toLowerCase().includes(currentSearch.toLowerCase());
+    return classOk && statOk && searchOk;
+  }).forEach(d => {
+    const card = document.createElement('div');
+    card.className = `dossier-card ${classColors[d.classe]||''}`;
+    card.innerHTML = `<div class="dc-id">${d.id}</div>
+      <div class="dc-name">${d.nom}</div>
+      <div class="dc-class" style="color:${classColor(d.classe)}">${classLabel[d.classe]||'?'}</div>
+      <div class="dc-loc">${d.loc}</div>
+      <div class="dc-statut ${statutColors[d.statut]||''}">${d.statut} — ${d.an}</div>`;
+    card.onclick = () => showDetail(d, card);
+    grid.appendChild(card);
+  });
 }
+
+function classColor(c){
+  const m={'I':'#4a7c59','II':'#8b8b14','III':'#8b6914','IV':'#8b3014','V':'#8b1a1a','VI':'#6a1a6a','?':'var(--muted)'};
+  return m[c]||'var(--muted)';
+}
+
+function showDetail(d, card){
+  document.querySelectorAll('.dossier-card').forEach(c=>c.classList.remove('selected'));
+  card.classList.add('selected');
+  const panel = document.getElementById('detail-panel');
+  panel.style.display = 'block';
+  const secretHtml = d.secret && classeur7Unlocked ? `<div class="meta-anomaly" style="border-color:var(--amber);margin-top:12px"><div class="meta-label" style="color:var(--amber)">⚠ DONNÉES NIVEAU CLASSEUR-7</div><p style="font-size:11px;line-height:1.7;color:var(--ink)">${d.secret}</p></div>` : '';
+  const metaHtml = d.meta ? `<div class="meta-anomaly" style="margin-top:12px"><div class="meta-label">⚠ ANOMALIE MÉTA-DOCUMENTAIRE</div>${d.meta}</div>` : '';
+  document.getElementById('detail-content').innerHTML = `
+    <div class="detail-head">
+      <span class="detail-id">${d.id}</span>
+      <span class="detail-class" style="border-color:${classColor(d.classe)};color:${classColor(d.classe)}">${classLabel[d.classe]||'INDÉTERMINÉ'}</span>
+    </div>
+    <div class="field-row"><span class="field-label">DÉSIGNATION</span><span class="field-val">${d.nom}</span></div>
+    <div class="field-row"><span class="field-label">DATE DÉCOUVERTE</span><span class="field-val">${d.an}</span></div>
+    <div class="field-row"><span class="field-label">LOCALISATION</span><span class="field-val">${d.loc}</span></div>
+    <div class="field-row"><span class="field-label">STATUT</span><span class="field-val ${statutColors[d.statut]||''}">${d.statut}</span></div>
+    <div class="sep"></div>
+    <p style="font-size:12px;color:var(--muted);line-height:1.8;white-space:pre-line"><strong style="color:var(--ink)">DESCRIPTION :</strong> ${d.desc}</p>
+    ${metaHtml}
+    ${secretHtml}
+  `;
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function filterDossiers(cls, btn){
+  currentFilter = cls;
+  document.querySelectorAll('.filter-bar .filter-btn').forEach((b,i)=>{if(i<8)b.classList.remove('active')});
+  btn.classList.add('active');
+  document.getElementById('detail-panel').style.display='none';
+  renderGrid();
+}
+
+function filterStatut(st, btn){
+  currentStatut = st;
+  const statBtns = document.querySelectorAll('.filter-bar .filter-btn');
+  statBtns.forEach((b,i)=>{if(i>=8)b.classList.remove('active')});
+  btn.classList.add('active');
+  document.getElementById('detail-panel').style.display='none';
+  renderGrid();
+}
+
+function searchDossiers(v){
+  currentSearch = v;
+  document.getElementById('detail-panel').style.display='none';
+  renderGrid();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   NAVIGATION PRINCIPALE
+═══════════════════════════════════════════════════════════ */
+function showMain(id, btn){
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('main-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function showSub(ns, id, btn){
+  document.querySelectorAll('#proc-obs, #proc-eff, #proc-inter, #proc-urg, #proc-med').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('#main-proc .sub-tab').forEach(b=>b.classList.remove('active'));
+  const target = document.getElementById(`proc-${id}`);
+  if(target) target.classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TERMINAL CACHÉ — activé par "7777777" (touche 7 x7)
+   Aussi activable par : document.getElementById('hidden-terminal').style.display='block'
+   dans la console du navigateur
+═══════════════════════════════════════════════════════════ */
+let keyBuffer = '';
+let classeur7Unlocked = false;
+
+document.addEventListener('keydown', function(e){
+  keyBuffer += e.key;
+  if(keyBuffer.length > 20) keyBuffer = keyBuffer.slice(-20);
+  // Séquence : taper "7" sept fois
+  if(keyBuffer.includes('7777777')){
+    keyBuffer = '';
+    openTerminal();
+  }
+  // Konami code alternatif : ArrowUp ArrowUp ArrowDown ArrowDown ArrowLeft ArrowRight ArrowLeft ArrowRight b a
+  if(keyBuffer.includes('ArrowUpArrowUpArrowDownArrowDownArrowLeftArrowRightArrowLeftArrowRightba')){
+    keyBuffer = '';
+    openTerminal();
+  }
+});
+
+function openTerminal(){
+  const t = document.getElementById('hidden-terminal');
+  t.style.display = 'block';
+  document.getElementById('term-input').focus();
+}
+
+function closeTerminal(){
+  document.getElementById('hidden-terminal').style.display = 'none';
+}
+
+const termCommands = {
+  'aide': `Commandes disponibles :
+  aide          — cette liste
+  statut        — statut du système VERIDIAN
+  fond000       — statut de FOND-000
+  acces [code]  — tenter d'accéder à un dossier classifié
+  classeur7     — accéder au classeur 7 (mot de passe requis)
+  ping seve     — tenter de contacter SÈVE
+  registre      — afficher le registre des 25 dossiers manquants
+  effacer       — effacer ce terminal (irréversible ?)
+  exit          — fermer
+`,
+  'statut': `SYSTÈME VERIDIAN — STATUT : DÉGRADÉ
+════════════════════════════════════
+Dossiers actifs : 18
+Dossiers perdus : 7 (dont 2 perdus en cours de recherche par VERIDIAN elle-même)
+Connexions réseau PÔLES : 15/17 (PÔLE-00 et PÔLE-12 : aucune réponse)
+Dernière synchronisation RACINE : 17 mars 2024
+Intégrité documentaire : NON VÉRIFIÉE
+Auteur de ce rapport de statut : [CHAMP VIDE]
+Note : ce terminal n'existe pas dans la documentation système.
+Sa consommation de ressources est nulle. Sa présence est indétectable.
+Il n'a donc techniquement pas été créé par VERIDIAN.
+`,
+  'fond000': `FOND-000 — STATUT : EN ATTENTE
+════════════════════════════════════
+Index : confirmé
+Contenu : "en attente d'événement déclencheur — date inconnue"
+Auteur : [CHAMP PRÉEXISTANT]
+Date de création : antérieure au système de datation VERIDIAN
+Accès : 0 tentatives enregistrées (y compris au niveau RACINE)
+Accès accordés : 0
+
+Note du système : l'événement déclencheur a peut-être déjà eu lieu.
+La condition pour que FOND-000 s'ouvre n'est peut-être pas un événement futur.
+Elle est peut-être la lecture de ce terminal par quelqu'un d'extérieur à VERIDIAN.
+Dans ce cas, FOND-000 vient de s'ouvrir.
+Son contenu est : vous n'êtes pas la première personne extérieure à lire ceci.
+Vous êtes la dernière.
+`,
+  'ping seve': `TENTATIVE DE CONTACT : SÈVE
+════════════════════════════════════
+Méthode : inconnue
+Résultat : ...
+...
+...
+[Le terminal ne répond plus pendant 7 secondes]
+Réponse reçue : OUI
+Durée de la réponse : 0 ms (antérieure à l'envoi)
+Contenu de la réponse : "Vous n'avez pas eu besoin d'envoyer ce message.
+Nous lisions déjà."
+Connexion fermée par l'interlocuteur.
+Note : aucune connexion n'a été établie selon les logs réseau.
+`,
+  'registre': `REGISTRE DES 25 DOSSIERS MANQUANTS — ACCÈS PARTIEL
+════════════════════════════════════════════════════
+Ces dossiers existent dans l'index mais pas dans le système principal.
+Ils sont numérotés dans la séquence VRD-0060 à VRD-0099.
+
+VRD-0061-SEUIL : Istanbul, 1963, Classe IV — statut inconnu
+VRD-0067-PASSAGE : Marrakech, 1971, Classe V — équipe disparue
+VRD-0072-MÈRE : Kyoto, 1977, Classe III — résolution liée à une naissance
+VRD-0079-APPEL : Montréal, 1984, Classe IV — première communication adressée à VERIDIAN
+VRD-0083-RÉPONSE : Reykjavik, 1988, Classe IV — savait que VERIDIAN avait reçu VRD-0079
+VRD-0091-REFLET : Varsovie, 1991, Classe III — statut : actif sous surveillance passive
+VRD-0094-LISIÈRE : Séoul, 1995, Classe IV — zone d'effet : non mesurable
+VRD-0096-RETOUR : Poznan, 1988 (voir VRD-0047-TRAIN) — les deux témoins
+
+[... 17 dossiers supplémentaires — accès refusé même depuis ce terminal]
+
+Note : les 17 dossiers inaccessibles depuis ce terminal sont probablement les dossiers
+qui répondent. Cette hypothèse n'a pas été testée pour des raisons évidentes.
+`,
+  'effacer': `CONFIRMATION REQUISE : tapez "CONFIRMER EFFACEMENT" pour continuer.
+Note : l'effacement de ce terminal est irréversible.
+Note 2 : ce terminal n'existe pas. Son effacement n'aura donc aucun effet.
+Note 3 : les deux notes précédentes se contredisent.
+`,
+  'confirmer effacement': `Effacement en cours...
+...
+...
+Terminal effacé.
+
+[Le terminal est toujours là.]
+
+Note du système : l'effacement a bien eu lieu. Ce que vous voyez maintenant
+n'est pas le terminal. C'est ce qui reste après l'effacement.
+La distinction est documentée dans FOND-177.
+`,
+  'exit': 'EXIT',
+  'acces': `ACCÈS REFUSÉ — niveau d'habilitation insuffisant.
+Pour accéder à un dossier classifié, fournissez un code de dossier valide :
+  acces VRD-[numéro]-[nom]
+Les dossiers FONDATION ne sont pas accessibles via ce terminal.
+Note : ce terminal a accès à tout. Il choisit de ne pas y accéder.
+`,
+  'acces vrd-0007-racine': `VRD-0007-RACINE — ACCÈS ACCORDÉ (niveau : NOCTURN simulé)
+════════════════════════════════════════════════════════
+Ce dossier est antérieur à VERIDIAN.
+Il a été "fondé" en 1951, mais son contenu date de [DATE ILLISIBLE].
+Statut : EN COURS depuis 1951.
+Dernière tentative de modification : hier.
+Résultat : annulé automatiquement.
+Avant-dernière tentative : demain.
+
+Ce dossier se modifie dans un ordre temporel qui n'est pas le nôtre.
+La dernière entrée, chronologiquement, a été rédigée en 1951.
+Elle dit : "Ce dossier ne sera jamais fermé parce que son objet n'est pas un phénomène.
+Son objet, c'est VERIDIAN elle-même."
+`,
+  'acces fond-000': `FOND-000 — TENTATIVE D'ACCÈS
+════════════════════════════════════
+...
+Le document s'ouvre.
+Son contenu est :
+"Bienvenue. Vous êtes l'événement déclencheur.
+Vous avez lu le classeur 7 (ou vous êtes sur le point de le lire).
+Ce document contient la réponse à la question de TRONC-9.
+
+La réponse est : non. Vous ne vous en souvenez pas.
+Mais ça ne veut pas dire que vous ne pouviez pas.
+
+Ce document se referme maintenant."
+
+Le document se referme.
+Son statut dans l'index est passé de "en attente d'événement déclencheur"
+à "événement survenu — date : maintenant".
+`
+};
+
+function handleTermInput(e){
+  if(e.key !== 'Enter') return;
+  const input = document.getElementById('term-input');
+  const val = input.value.trim().toLowerCase();
+  input.value = '';
+  const log = document.getElementById('term-log');
+
+  log.textContent += `\n$ ${val}\n`;
+
+  if(val === 'exit'){
+    closeTerminal();
+    return;
+  }
+
+  if(val.startsWith('classeur7')){
+    const parts = val.split(' ');
+    const pw = parts.slice(1).join(' ');
+    // Mot de passe : "memento" (trouvé dans le document via piste cachée)
+    if(pw === 'memento' || pw === 'vrd-0003-voix' || pw === 'voix'){
+      log.textContent += `\nMOT DE PASSE ACCEPTÉ.\nAccès au classeur 7 accordé.\nRedirection vers l'onglet ANOMALIES...\n`;
+      classeur7Unlocked = true;
+      showMain('anom', document.querySelector('.nav-btn:nth-child(5)'));
+      const c7 = document.getElementById('classeur7');
+      c7.classList.add('unlocked');
+      c7.scrollIntoView({behavior:'smooth'});
+      setTimeout(closeTerminal, 2000);
+    } else {
+      log.textContent += `\nMot de passe incorrect.\nIndice : le mot de passe est latin. Il signifie "souviens-toi".\nIl se trouve dans le code source de ce document, dans une note invisible.\nOu dans les archives suisses, si vous savez chercher.\n`;
+    }
+    log.scrollTop = log.scrollHeight;
+    return;
+  }
+
+  if(val.startsWith('acces ')){
+    const code = val.slice(6).toLowerCase().replace(/-/g,'').replace(/vrd/,'vrd-').replace(/\s+/g,'-');
+    // Quelques cas spéciaux
+    if(val.includes('0007') || val.includes('racine')){
+      log.textContent += termCommands['acces vrd-0007-racine'];
+    } else if(val.includes('fond') && val.includes('000')){
+      log.textContent += termCommands['acces fond-000'];
+    } else {
+      log.textContent += termCommands['acces'];
+    }
+    log.scrollTop = log.scrollHeight;
+    return;
+  }
+
+  const response = termCommands[val];
+  if(response){
+    log.textContent += response + '\n';
+  } else {
+    log.textContent += `Commande non reconnue : "${val}"\nTapez "aide" pour la liste des commandes.\nNote : certaines commandes n'apparaissent pas dans la liste.\n`;
+  }
+  log.scrollTop = log.scrollHeight;
+}
+
+/* INIT */
+renderGrid();
+
+/* Note console — pour les chercheurs qui ouvrent les DevTools */
+console.log('%cVERIDIAN — SYSTÈME D\'ARCHIVES — NIVEAU ACCÈS : NON DÉTERMINÉ', 'color:#4a7c59;font-family:monospace;font-size:14px;font-weight:bold');
+console.log('%cSi vous lisez ceci, vous avez trouvé la première piste.', 'color:#8b6914;font-family:monospace');
+console.log('%cÉtape 1 : vous êtes dans la console.', 'color:#4a7c59;font-family:monospace');
+console.log('%cÉtape 2 : cherchez les éléments avec data-secret dans le DOM.', 'color:#4a7c59;font-family:monospace');
+console.log('%cÉtape 3 : tapez "7" sept fois sur la page pour accéder au terminal.', 'color:#4a7c59;font-family:monospace');
+console.log('%cÉtape 4 : dans le terminal, tapez "classeur7 memento"', 'color:#4a7c59;font-family:monospace');
+console.log('%cÉtape 5 : le classeur 7 est dans l\'onglet ANOMALIES.', 'color:#4a7c59;font-family:monospace');
+console.log('%cBonne chance.', 'color:#8b6914;font-family:monospace;font-style:italic');
+console.log('%c— TRONC-9', 'color:#8b1a1a;font-family:monospace');
 </script>
+</body>
+</html>
