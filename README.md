@@ -1,81 +1,77 @@
-# VERIDIAN_classified_dossier
+🧩 ÉLÉMENTS DE RÉCUPÉRATION (DONNÉES BRUTES)
+Identifiant du premier dossier ouvert par l'organisation
 
-📁 VERIDIAN — CHECK-LIST DE RÉCUPÉRATION
+  
 
-🔒 Niveau requis : EXTERNE NON AUTORISÉ
+Mot de passe du Classeur 7 (Format : Mot latin de 7 lettres)  
 
-📌 Objectif : Extraction des éléments dissimulés dans le dossier
+Mot de passe de FOND-000 (Format : Mot latin de 8 lettres)  
 
----
+Adresse du siège administratif dissimulée
 
-🧩 ÉLÉMENTS À RÉCUPÉRER
+  
 
-☐ Identifiant du premier dossier
+Localisation précise de l'incident fondateur
 
-☐ Mot de passe partiel (format : VRD-XXXX-XXXX)
+  
 
-☐ Mot-clé caché dans les archives (indice : publications scientifiques)
+Date exacte de l'accord fondateur
 
+  
 
-☐ Adresse complète dissimulée dans les métadonnées
+Nom d'au moins trois structures-écrans
 
-☐ Localisation de l’incident fondateur (zone précise)
+  
 
+Nombre de pôles régionaux ayant cessé toute communication
 
-☐ Nom d’au moins une structure-écran
+  
 
-☐ Nom d’un pôle géographique confirmé
+Nombre total de dossiers réellement existants (incluant les manquants)
 
+  
 
-☐ Nombre réel estimé d’agents (valeur + anomalie associée)
+🖥️ EXTRACTION TECHNIQUE (SYSTÈMES)
+Activation du terminal caché : Méthode d'accès détectée  
 
+Activation du diagnostic système : Interaction spécifique avec l'interface  
 
-☐ Une contradiction interne dans les documents (expliquer)
+Décodage Hexadécimal : Identifier et traduire la valeur présente dans le CSS  
 
+Déchiffrement ISO-7 : Identifier le fragment codé et la logique de décalage  
 
-☐ Une note cachée inaccessible visuellement (méthode utilisée ?)
+Anomalie de l'onglet : Identifier le mot formé par le changement dynamique du titre de la page  
 
----
+🧠 ANALYSE ET DOCTRINE
+Traduction de la question latine centrale
 
-🖥️ EXTRACTION TECHNIQUE
+  
 
-☐ Méthode utilisée pour révéler du contenu caché (inspecteur, sélection, etc.)
+Explication de la contradiction sur la date de fondation
 
-☐ Présence d’un terminal ou système caché (oui/non + preuve)
+  
 
-☐ Action spéciale détectée (indice : interaction clavier)
+Identification du grade hiérarchique "SÈVE" (Rôle et mystère associé)  
 
----
+Définition de la "Séquence" selon TRONC-9 (Les 3 étapes identifiées)  
 
-🧠 ANALYSE
+Interprétation de la Note Finale (Qui surveille qui ?)  
 
-☐ Traduction complète de la phrase en latin
+⚠️ OBJECTIFS FINAUX (ACCÈS RÉUSSIS)
+[ ] Accès validé au Classeur 7
 
-☐ Interprétation de son sens dans le contexte du dossier
+  
 
-☐ Explication du rôle de “SÈVE” (hypothèse argumentée)
-☐ Ce que VERIDIAN cache réellement (selon les indices)
+[ ] Accès validé à FOND-000
 
----
+  
 
-⚠️ OBJECTIF FINAL
+[ ] Identification du contenu de l'Article 7 de la charte
 
-☐ Accès au classeur 7 (preuve demandée)
+  
 
-☐ Résumé du contenu trouvé dans ce classeur
+[ ] Localisation et date du prochain rendez-vous physique pour contacter SÈVE
 
-☐ Élément le plus inquiétant découvert
+  
 
----
-
-📎 FORMAT DE RENDU
-Texte structuré ou PDF
-Captures d’écran autorisées
-Toute supposition doit être justifiée
-
----
-
-🕒 Temps estimé : 30 min → 2h
-☠️ Échec = informations incomplètes ou non vérifiables
-
-**“VERIDIAN ne s’explique pas. VERIDIAN documente.”
+“VERIDIAN ne s’explique pas. VERIDIAN documente.”
